@@ -1,0 +1,60 @@
+.header {
+  padding-right: 79px;
+  padding-left: 118px;
+}
+
+@media screen and (max-width: 900px) {
+  .header {
+    padding-left: 0;
+  }
+}
+
+.menuButton {
+  font-weight: 600;
+  size: 18px;
+  margin: 0 7px;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.drawerContainer {
+  padding: 15px 30px 0;
+  position: relative;
+  height: 100%;
+}
+
+.drawerChoice {
+  display: flex;
+  align-items: center;
+  margin-top: 7px !important;
+}
+
+.avatarMobileContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.largeAvatar {
+  width: 10rem;
+  height: 10rem;
+}
+
+.smallAvatar {
+  margin-left: 10px;
+}
+
+.username {
+  font-weight: 600;
+  size: 18px;
+}
+
+.logoutButton {
+  float: bottom;
+}

@@ -1,0 +1,47 @@
+.noMangasText {
+  padding: 2px 8px;
+  width: 100%;
+  text-align: center;
+}
+
+.mangas-pagination {
+  margin: 2em 0;
+  display: flex;
+  justify-content: center;
+}
+
+.mangas-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.mangaCardContainer {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: center;
+  overflow: hidden;
+  gap: 1.5vh;
+}
+
+.top-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  margin: 0 0 17px 0;
+}
+
+.mangaCardContainer.view-compact {
+  display: flex;
+  flex-direction: column;
+}
+
+.tabla-mangas .MuiTableCell-sizeSmall {
+  font-size: 10pt;
+  padding: 2px;
+}

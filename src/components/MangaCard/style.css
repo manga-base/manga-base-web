@@ -1,0 +1,146 @@
+.manga-card {
+  height: 297px;
+  width: 198px;
+  text-align: center;
+  overflow: hidden;
+  user-select: none;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.manga-link {
+  height: inherit;
+  width: inherit;
+  position: absolute;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.manga-card a:hover ~ img {
+  transform: scale(1.5);
+  filter: blur(2px);
+}
+
+.manga-card a:hover ~ p {
+  transform: translateY(-110%);
+}
+
+.manga-card img {
+  height: inherit;
+  width: inherit;
+  box-shadow: 3px 3px 7px black;
+  object-fit: cover;
+  transition: all 0.3s ease;
+}
+
+.manga-card p {
+  background: linear-gradient(to bottom, transparent, black);
+  padding: 10% 5%;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  color: white;
+}
+
+.manga-list {
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 12px;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.manga-list > div {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.manga-list .manga-image {
+  display: table-cell;
+  position: relative;
+  text-align: center;
+  padding: 0 12px 0 0;
+  vertical-align: top;
+  width: 150px;
+}
+
+.manga-list .manga-image div {
+  position: relative;
+  display: block;
+  height: 100%;
+  overflow: hidden;
+  line-height: 1px;
+}
+
+.manga-list .manga-image img {
+  border-radius: 4px;
+  width: 120px;
+  height: auto;
+  border: none;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.manga-list .manga-content {
+  padding-left: 12px;
+  width: 100%;
+  display: table-cell;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.2px;
+}
+
+.manga-list .manga-content > *:not(.manga-content > *:first-child) {
+  margin-top: 4px;
+}
+
+.manga-rating {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.manga-rating .number {
+  margin-right: 4px;
+}
+
+.generos-manga {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  position: relative;
+}
+
+.generos-manga::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(to right, transparent 80%, #303030 100%);
+}
+
+.generos-manga .MuiChip-root {
+  margin: 4px;
+}
+
+.generos-manga .MuiChip-root:first-child {
+  margin-left: 0;
+}
+
+.argumento-manga {
+  max-height: 62px;
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.manga-compact {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
