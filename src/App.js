@@ -2,10 +2,11 @@ import { BrowserRouter as Router, Switch } from "react-router-dom";
 import ScrollToTop from "./helpers/ScrollToTop";
 import { useUser } from "./context/UserContext";
 import { Header, Footer, Loading, PrivateRoute, PublicRoute } from "./components";
-import { Home, Login, SignUp, Profile, Settings, Biblioteca, Manga } from "./pages";
-import "./style.css";
+import { Home, Login, SignUp, Profile, Settings, Biblioteca, Manga, MisMangas } from "./pages";
+import useGlobalStyle from "./style";
 
 export default function App() {
+  const classes = useGlobalStyle();
   const { usuarioCargado } = useUser();
 
   if (!usuarioCargado) return <Loading />;
@@ -14,7 +15,7 @@ export default function App() {
     <Router>
       <ScrollToTop />
       <Header />
-      <div className="mainApp">
+      <div className={classes.mainApp}>
         <Switch>
           <PublicRoute exact path={["/", "/home"]} component={Home} />
           <PublicRoute exact path="/biblioteca" component={Biblioteca} />
@@ -23,6 +24,7 @@ export default function App() {
           <PublicRoute exact path="/signup" component={SignUp} restricted />
           <PrivateRoute exact path="/profile/:id/:tab?" component={Profile} />
           <PrivateRoute exact path="/settings" component={Settings} />
+          <PrivateRoute exact path="/mis-mangas" component={MisMangas} />
         </Switch>
       </div>
       <Footer />

@@ -8,12 +8,16 @@ import { Loading, MangaCardContainer } from "../../components";
 import { http } from "../../helpers/http";
 import { setStorageMangas, getAllMangas } from "../../helpers/storage/manga";
 import { setFiltros, getFiltros } from "../../helpers/storage/filtros";
-import "./style.css";
+import useGlobalStyle from "../../style";
+import useStyle from "./style";
 
 const params = new URLSearchParams(window.location.search);
 var dummy = document.createElement("input");
 
 const Biblioteca = () => {
+  const localClass = useStyle();
+  const globalClass = useGlobalStyle();
+  const classes = { ...localClass, ...globalClass };
   const { enqueueSnackbar } = useSnackbar();
 
   const [datosCargados, setDatosCargados] = useState(false);
@@ -100,7 +104,6 @@ const Biblioteca = () => {
       setMangasCargados(true);
     } else {
       try {
-        console.log("Obteniendo mangas");
         const { data } = await http.get(`/biblioteca/mangas`);
         if (data.correcta) {
           setMangas(data.datos);
@@ -196,8 +199,8 @@ const Biblioteca = () => {
 
   const autocompleteModule = (label, values, setFunction, value) => {
     return (
-      <div className="filter-module" key={label}>
-        <Typography className="filter-title">{label}</Typography>
+      <div className={classes.filterModule} key={label}>
+        <Typography className={classes.filterTitle}>{label}</Typography>
         <div>
           <Autocomplete
             multiple
@@ -224,9 +227,9 @@ const Biblioteca = () => {
   if (!datosCargados) return <Loading />;
 
   return (
-    <div className="main">
-      <div className="title-header">
-        <div className="titulo">
+    <div className={classes.mainContainer}>
+      <div className={classes.header}>
+        <div className={classes.title}>
           <Book fontSize="large" color="primary" />
           <Typography variant="h4">Biblioteca de manga</Typography>
         </div>
@@ -247,8 +250,8 @@ const Biblioteca = () => {
         />
       </div>
       <div style={{ display: "flex" }}>
-        <div className="filters-container">
-          <div className="filter-module flex-container">
+        <div className={classes.filtersContainer}>
+          <div className={[classes.filterModule, classes.flexContainer].join(" ")}>
             <Typography variant="h5">Filtros</Typography>
             {mangas.length !== mangasMostrados.length && (
               <Button size="small" onClick={cleanFilters}>
@@ -257,8 +260,8 @@ const Biblioteca = () => {
             )}
           </div>
           {arrayFiltros.map(({ label, values, setFunction, value }) => autocompleteModule(label, values, setFunction, value))}
-          <div className="filter-module">
-            <Typography className="filter-title" id="nota-slider">
+          <div className={classes.filterModule}>
+            <Typography className={classes.filterTitle} id="nota-slider">
               Nota{" "}
               <Typography color="textSecondary" variant="caption">
                 ({nota[0] + "-" + nota[1]})
@@ -268,13 +271,13 @@ const Biblioteca = () => {
               <Slider value={nota} min={1} max={10} onChange={(e, v) => setNota(v)} valueLabelDisplay="auto" aria-labelledby="nota-slider" />
             </div>
           </div>
-          <div className="filter-module share-button">
+          <div className={[classes.filterModule, classes.centerText].join(" ")}>
             <Button startIcon={<Share />} variant="contained" color="primary" onClick={copiarUrl}>
               Compartir busqueda
             </Button>
           </div>
         </div>
-        <div className="main-container">
+        <div className={classes.mangaContainer}>
           <MangaCardContainer mangas={mangasMostrados} pagination={10} orderButtons />
         </div>
       </div>

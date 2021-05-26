@@ -85,6 +85,7 @@ const Profile = () => {
     const cargarPerfil = async (idUsuario) => {
       try {
         const { data } = await http.get(`/usuario/${idUsuario}/profile`);
+        console.log("Data user; ", data);
         setInfoPerfil(data);
         setProfile(id, data);
         setPerfilCargado(true);

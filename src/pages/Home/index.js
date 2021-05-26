@@ -1,8 +1,13 @@
 import { Button, Grid, Paper } from "@material-ui/core";
 import Carousel from "react-material-ui-carousel";
-import "./style.css";
+import useGlobalStyle from "../../style";
+import useStyle from "./style";
 
 const Home = () => {
+  const localClass = useStyle();
+  const globalClass = useGlobalStyle();
+  const classes = { ...localClass, ...globalClass };
+
   var items = [
     {
       name: "Random Name #1",
@@ -29,7 +34,7 @@ function Item(props) {
       <h2>{props.item.name}</h2>
       <p>{props.item.description}</p>
 
-      <Button className="CheckButton">Check it out!</Button>
+      <Button>Check it out!</Button>
     </Paper>
   );
 }
