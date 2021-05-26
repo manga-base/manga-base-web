@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CommentBox = ({ comments }) => {
+const CommentBox = ({ comments, readOnly, newCommentFunction }) => {
   const classes = useStyles();
   const { usuario } = useUser();
   const { enqueueSnackbar } = useSnackbar();
@@ -40,6 +40,7 @@ const CommentBox = ({ comments }) => {
     });
     if (data.correcta) {
       setArrayComentarios((p) => [data.datos, ...p]);
+      newCommentFunction(data.datos.id);
     }
   };
 
@@ -99,10 +100,10 @@ const CommentBox = ({ comments }) => {
           <MenuItem onClick={ordenarPorMasRecientes}>Más recientes</MenuItem>
         </Menu>
       </div>
-      {usuario && <CommentInput onSubmit={enviarComentario} placeholder="Añade un comentario público..." />}
+      {!readOnly && (usuario ? <CommentInput onSubmit={enviarComentario} placeholder="Añade un comentario público..." /> : <Typography color="textSecondary">Inicia sessión para poder comentar.</Typography>)}
       <List>
         {arrayComentarios.map((comment) => (
-          <Comment key={comment.id.toString()} {...{ comment }} line />
+          <Comment key={comment.id.toString()} {...{ comment, readOnly }} line />
         ))}
       </List>
     </div>

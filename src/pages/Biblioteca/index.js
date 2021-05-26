@@ -1,5 +1,5 @@
 import { Button, Checkbox, InputAdornment, Slider, TextField, Typography } from "@material-ui/core";
-import { Book, CheckBox, CheckBoxOutlineBlank, RestaurantMenu, Search, Share } from "@material-ui/icons";
+import { Book, CheckBox, CheckBoxOutlineBlank, Search, Share } from "@material-ui/icons";
 import { Autocomplete } from "@material-ui/lab";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";

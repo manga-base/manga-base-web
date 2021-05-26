@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Comment = ({ comment, from, line, isResponse }) => {
+const Comment = ({ comment, from, line, isResponse, readOnly }) => {
   // console.log("Comment:", comment);
   const { id, texto, puntosPositivos, estadoUsuario, idUsuario, username, avatar, respuestas } = comment;
   const avatarSrc = `${imgUrl}avatars/${avatar}`;
@@ -228,9 +228,11 @@ const Comment = ({ comment, from, line, isResponse }) => {
             <IconButton className={classes.thumbButton} disabled={!usuario} color={puntuacionUsuario && puntuacionUsuario.tipo === "negativo" ? "primary" : "inherit"} onClick={handleDislike}>
               <ThumbDown className="thumb-icon" />
             </IconButton>
-            <Button size="small" onClick={() => setMostrarResponder(true)}>
-              Responder
-            </Button>
+            {!readOnly && (
+              <Button size="small" onClick={() => setMostrarResponder(true)}>
+                Responder
+              </Button>
+            )}
             {usuario && (
               <div hidden={!hovered}>
                 <IconButton size="small" aria-controls="comment-menu" aria-haspopup="true" onClick={handleClickComment}>

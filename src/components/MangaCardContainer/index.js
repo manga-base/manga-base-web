@@ -119,30 +119,32 @@ const MangaCardContainer = ({ mangas, pagination, orderButtons, defaultView }) =
         <div className="mangaCardContainer">{listaMangas}</div>
       )}
 
-      <div style={{ position: "relative", width: "100%", marginBottom: "30px" }}>
-        {pagination && count && (
-          <Pagination
-            count={count}
-            page={page}
-            onChange={(e, v) => {
-              window.scrollTo(0, 0);
-              setPage(v);
-            }}
-            color="primary"
-            showFirstButton
-            showLastButton
-            className="mangas-pagination"
-          />
-        )}
-        <FormControl style={{ position: "absolute", right: 0, top: "2em" }}>
-          <Select value={numMangasPorPagina} onChange={(e) => setNumMangasPorPagina(e.target.value)}>
-            <MenuItem value={5}>5</MenuItem>
-            <MenuItem value={10}>10</MenuItem>
-            <MenuItem value={25}>25</MenuItem>
-            <MenuItem value={50}>50</MenuItem>
-          </Select>
-        </FormControl>
-      </div>
+      {pagination && (
+        <div style={{ position: "relative", width: "100%", marginBottom: "30px" }}>
+          {count && (
+            <Pagination
+              count={count}
+              page={page}
+              onChange={(e, v) => {
+                window.scrollTo(0, 0);
+                setPage(v);
+              }}
+              color="primary"
+              showFirstButton
+              showLastButton
+              className="mangas-pagination"
+            />
+          )}
+          <FormControl style={{ position: "absolute", right: 0, top: "2em" }}>
+            <Select value={numMangasPorPagina} onChange={(e) => setNumMangasPorPagina(e.target.value)}>
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={25}>25</MenuItem>
+              <MenuItem value={50}>50</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+      )}
     </section>
   );
 };
