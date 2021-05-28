@@ -1,38 +1,21 @@
-import { Avatar, Button, makeStyles, TextField } from "@material-ui/core";
+import { Avatar, Button, TextField } from "@material-ui/core";
 import { useState } from "react";
 import { useUser } from "../../context/UserContext";
-import "./style.css";
-
-const useStyles = makeStyles((theme) => ({
-  butonContainer: {
-    display: "flex",
-    marginTop: 5,
-    justifyContent: "flex-end",
-    "& > *": {
-      marginRight: theme.spacing(1),
-    },
-    "& > *:last-child": {
-      marginRight: 0,
-    },
-  },
-  input: {
-    "& .MuiInputBase-root": {
-      fontSize: 14,
-    },
-    "& .MuiInputBase-multiline": {
-      padding: "6px 0 4px",
-    },
-  },
-}));
+import useGlobalStyle from "../../style";
+import useStyle from "./style";
 
 const imgUrl = process.env["REACT_APP_IMG_URL"];
 
 const CommentInput = ({ onSubmit, onClose, initialValue, submitButonText, placeholder, autoFocus, response }) => {
+  const localClass = useStyle();
+  const globalClass = useGlobalStyle();
+  const classes = { ...localClass, ...globalClass };
+
   const { usuario } = useUser();
-  const { username, avatar } = usuario;
+  const username = (usuario && usuario.username) || "Usuario sin cuenta";
+  const avatar = (usuario && usuario.avatar) || "noAvatar.png";
   const avatarSrc = `${imgUrl}avatars/${avatar}`;
 
-  const classes = useStyles();
   const [textoComentario, setTextoComentario] = useState(initialValue || "");
   const [showButtons, setShowButtons] = useState(false);
 
@@ -49,11 +32,11 @@ const CommentInput = ({ onSubmit, onClose, initialValue, submitButonText, placeh
   };
 
   return (
-    <div className="comment-container">
-      <div className="comment-content">
-        <Avatar src={avatarSrc} alt={username} className={`comment-avatar ${response && "response"}`} />
-        <div className="comment-body">
-          <TextField {...{ placeholder, autoFocus }} className={classes.input} size="small" fullWidth multiline rowsMax={4} value={textoComentario} onFocus={() => setShowButtons(true)} onChange={(e) => setTextoComentario(e.target.value)} />
+    <div className={classes.commentContainer}>
+      <div className={classes.commentContent}>
+        <Avatar src={avatarSrc} alt={username} className={response ? classes.commentAvatarResponse : classes.commentAvatar} />
+        <div className={classes.commentBody}>
+          <TextField {...{ placeholder, autoFocus }} disabled={!usuario} className={classes.input} size="small" fullWidth multiline rowsMax={4} value={textoComentario} onFocus={() => setShowButtons(true)} onChange={(e) => setTextoComentario(e.target.value)} />
         </div>
       </div>
       {showButtons && (

@@ -1,5 +1,5 @@
-import { Chip, Grid, IconButton, makeStyles, Paper, Tooltip, Typography, withStyles } from "@material-ui/core";
-import { MoreVert, Star, StarBorder } from "@material-ui/icons";
+import { Chip, Grid, IconButton, Paper, Typography } from "@material-ui/core";
+import { MoreVert } from "@material-ui/icons";
 import { Rating } from "@material-ui/lab";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
@@ -8,22 +8,16 @@ import { CommentBox, Loading, ModalManga } from "../../components";
 import { useUser } from "../../context/UserContext";
 import { http } from "../../helpers/http";
 import { getManga, setManga } from "../../helpers/storage/manga";
+import useGlobalStyle from "../../style";
 import useStyle from "./style";
-import "./style.css";
 
 const imgUrl = process.env["REACT_APP_IMG_URL"];
 
-const Subtitle = (props) => {
-  if (!props.titulo) return null;
-  return (
-    <h2 className="subtitulo-manga">
-      {props.flag && <img className="subtitle-flag" alt={props.flag + "-flag"} src={"https://www.countryflags.io/" + props.flag + "/shiny/24.png"} />}
-      {props.titulo}
-    </h2>
-  );
-};
-
 const Manga = () => {
+  const localClass = useStyle();
+  const globalClass = useGlobalStyle();
+  const classes = { ...localClass, ...globalClass };
+
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
   const { usuario } = useUser();
@@ -35,7 +29,6 @@ const Manga = () => {
   const [openModal, setOpenModal] = useState(false);
 
   const history = useHistory();
-  const classes = useStyle();
 
   useEffect(() => {
     if (!id) history.push("/home");
@@ -66,7 +59,8 @@ const Manga = () => {
 
     const cargarComentarios = async () => {
       try {
-        const { data } = await http.get(`/comentario/manga/${id}`);
+        var url = usuario ? `/comentario/manga/${id}` : `/public-comentario/manga/${id}`;
+        const { data } = await http.get(url);
         if (data.correcta) {
           setComentarios(data.datos);
           setComentariosCargados(true);
@@ -79,10 +73,18 @@ const Manga = () => {
       }
     };
 
-    if (usuario) {
-      cargarComentarios();
-    }
-  }, [id]);
+    cargarComentarios();
+  }, [id, usuario, history, enqueueSnackbar]);
+
+  const Subtitle = (props) => {
+    if (!props.titulo) return null;
+    return (
+      <h2 className={classes.subtituloManga}>
+        {props.flag && <img className={classes.subtituloFlag} alt={props.flag + "-flag"} src={"https://www.countryflags.io/" + props.flag + "/shiny/24.png"} />}
+        {props.titulo}
+      </h2>
+    );
+  };
 
   const handleChipClick = (e) => {
     //console.log("Chip click", e);
@@ -108,7 +110,7 @@ const Manga = () => {
   const fotoSrc = `${imgUrl}manga/${infoManga.foto}`;
 
   return (
-    <div className="main">
+    <div className={classes.mainContainer}>
       <Paper elevation={3} className={classes.paper}>
         <Grid container direction="row" justify="center" alignItems="flex-start" className={classes.mangaGrid}>
           <Grid container justify="center" item lg={6}>
@@ -123,11 +125,11 @@ const Manga = () => {
               </IconButton>
             )}
             <Grid container direction="row" alignItems="center" item>
-              <h1 className="title-manga">{infoManga.tituloPreferido}</h1>
+              <h1 className={classes.tituloManga}>{infoManga.tituloPreferido}</h1>
               <Typography className={classes.fechaPublicacion}>({infoManga.añoDePublicacion})</Typography>
             </Grid>
-            <div className="manga-rating">
-              <span className="number">{infoManga.nota}</span>
+            <div className={classes.mangaRating}>
+              <span className={classes.mangaRatingNumber}>{infoManga.nota}</span>
               <Rating name="nota-manga" size="small" precision={0.5} value={parseFloat(infoManga.nota)} readOnly />
             </div>
             <Subtitle titulo={infoManga.tituloJA + " (" + infoManga.tituloRōmaji + ")"} flag="jp" />

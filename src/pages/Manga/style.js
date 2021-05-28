@@ -89,6 +89,18 @@ const useStyle = makeStyles((theme) => ({
     alignItems: "center",
     padding: 8,
   },
+  subtituloManga: {
+    fontSize: 17,
+    color: "#999",
+  },
+  subtituloFlag: {
+    verticalAlign: "bottom",
+    marginRight: 4,
+  },
+  tituloManga: {
+    fontSize: 20,
+    marginBottom: 10,
+  },
 }));
 
 export default useStyle;

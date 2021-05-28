@@ -66,7 +66,8 @@ const ModalManga = ({ idManga, open, onClose }) => {
       }
     };
     cargarInfo();
-  }, [idManga]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idManga, usuario]);
 
   const handleSubmitUserData = async () => {
     try {

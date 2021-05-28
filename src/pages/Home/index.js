@@ -1,4 +1,4 @@
-import { Button, Grid, Paper } from "@material-ui/core";
+import { Button, Paper } from "@material-ui/core";
 import Carousel from "react-material-ui-carousel";
 import useGlobalStyle from "../../style";
 import useStyle from "./style";
@@ -20,11 +20,13 @@ const Home = () => {
   ];
 
   return (
-    <Carousel>
-      {items.map((item, i) => (
-        <Item key={i} item={item} />
-      ))}
-    </Carousel>
+    <div className={classes.mainContainer}>
+      <Carousel>
+        {items.map((item, i) => (
+          <Item key={i} item={item} />
+        ))}
+      </Carousel>
+    </div>
   );
 };
 

@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CommentBox = ({ comments, readOnly, newCommentFunction }) => {
+const CommentBox = ({ comments, readOnly, from, noLine, newCommentFunction }) => {
   const classes = useStyles();
   const { usuario } = useUser();
   const { enqueueSnackbar } = useSnackbar();
@@ -28,6 +28,13 @@ const CommentBox = ({ comments, readOnly, newCommentFunction }) => {
   const [commentsLenght, setCommentsLenght] = useState(0);
 
   useEffect(() => {
+    const count = (array) => {
+      array.forEach((e) => {
+        setCommentsLenght((e) => e + 1);
+        e.respuestas && count(e.respuestas);
+      });
+    };
+
     count(arrayComentarios);
   }, [arrayComentarios]);
 
@@ -42,13 +49,6 @@ const CommentBox = ({ comments, readOnly, newCommentFunction }) => {
       setArrayComentarios((p) => [data.datos, ...p]);
       newCommentFunction(data.datos.id);
     }
-  };
-
-  const count = (array) => {
-    array.forEach((e) => {
-      setCommentsLenght((e) => e + 1);
-      e.respuestas && count(e.respuestas);
-    });
   };
 
   const handleOpenOrdenar = (event) => {
@@ -76,7 +76,9 @@ const CommentBox = ({ comments, readOnly, newCommentFunction }) => {
   return (
     <div className={classes.commentBoxContainer}>
       <div className={classes.commentBoxHeader}>
-        <Typography>{commentsLenght || 0} comentarios</Typography>
+        <Typography>
+          {commentsLenght || 0} {commentsLenght > 1 ? "comentarios" : "comentario"}
+        </Typography>
         <Button variant="text" size="small" startIcon={<Sort />} aria-controls="order-menu" aria-haspopup="true" onClick={handleOpenOrdenar}>
           Ordenar Por
         </Button>
@@ -100,10 +102,10 @@ const CommentBox = ({ comments, readOnly, newCommentFunction }) => {
           <MenuItem onClick={ordenarPorMasRecientes}>Más recientes</MenuItem>
         </Menu>
       </div>
-      {!readOnly && (usuario ? <CommentInput onSubmit={enviarComentario} placeholder="Añade un comentario público..." /> : <Typography color="textSecondary">Inicia sessión para poder comentar.</Typography>)}
+      {!readOnly && <CommentInput onSubmit={enviarComentario} placeholder={usuario ? "Añade un comentario público..." : "Inicia sessión para poder comentar."} />}
       <List>
         {arrayComentarios.map((comment) => (
-          <Comment key={comment.id.toString()} {...{ comment, readOnly }} line />
+          <Comment key={comment.id.toString()} {...{ comment, readOnly, from, noLine, defaultOpen: commentsLenght < 10 }} />
         ))}
       </List>
     </div>

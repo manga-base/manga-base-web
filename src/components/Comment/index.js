@@ -1,4 +1,4 @@
-import { Avatar, IconButton, makeStyles, Typography, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Collapse } from "@material-ui/core";
+import { Avatar, IconButton, Typography, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Collapse } from "@material-ui/core";
 import { Delete, Edit, ExpandLess, ExpandMore, MoreHoriz, ThumbDown, ThumbUp } from "@material-ui/icons";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
@@ -6,7 +6,9 @@ import { Link as RouterLink } from "react-router-dom";
 import { CommentInput } from "..";
 import { useUser } from "../../context/UserContext";
 import { http } from "../../helpers/http";
-import "./style.css";
+import useGlobalStyle from "../../style";
+import useStyle from "./style";
+
 const imgUrl = process.env["REACT_APP_IMG_URL"];
 
 function timeSince(date) {
@@ -27,38 +29,11 @@ function timeSince(date) {
   return `hace ${Math.floor(seconds).toString()} ${seconds >= 2 ? "segundos" : "segundo"}`;
 }
 
-const useStyles = makeStyles((theme) => ({
-  commentUsername: {
-    fontSize: 14,
-    fontWeight: "500",
-    lineHeight: "1.8rem",
-    cursor: "pointer",
-  },
-  commentDate: {
-    fontSize: 12,
-    letterSpacing: 0.3,
-    lineHeight: "1.8rem",
-  },
-  commentText: {
-    fontSize: 14,
-    whiteSpace: "pre-line",
-  },
-  thumbButton: {
-    padding: 8,
-    "&:hover": {
-      color: theme.palette.text.primary,
-    },
-  },
-  popupIcon: {
-    margin: "0 1rem 0 0.3rem",
-  },
-  comentContainer: {
-    padding: "0 48px 0 0",
-  },
-}));
+const Comment = ({ comment, from, noLine, isResponse, readOnly, defaultOpen }) => {
+  const localClass = useStyle();
+  const globalClass = useGlobalStyle();
+  const classes = { ...localClass, ...globalClass };
 
-const Comment = ({ comment, from, line, isResponse, readOnly }) => {
-  // console.log("Comment:", comment);
   const { id, texto, puntosPositivos, estadoUsuario, idUsuario, username, avatar, respuestas } = comment;
   const avatarSrc = `${imgUrl}avatars/${avatar}`;
   const [puntuacion, setPuntuacion] = useState(puntosPositivos);
@@ -71,8 +46,7 @@ const Comment = ({ comment, from, line, isResponse, readOnly }) => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [mostrarResponder, setMostrarResponder] = useState(false);
   const [respuestasComentarios, setrespuestasComentarios] = useState(respuestas || []);
-  const [showResponses, setShowResponses] = useState(false);
-  const classes = useStyles();
+  const [showResponses, setShowResponses] = useState(defaultOpen || false);
   const { usuario } = useUser();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -196,44 +170,44 @@ const Comment = ({ comment, from, line, isResponse, readOnly }) => {
 
   return (
     <>
-      <div className="comment-container" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
-        {line && <div className="comment-line" onClick={handleClickShowResponses}></div>}
+      <div className={classes.commentContainer} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+        {!noLine && <div className={classes.commentLine} onClick={handleClickShowResponses}></div>}
         {from && (
-          <div className="comment-from">
-            <Avatar src={avatarSrc} alt={username} className="small-avatar" />
+          <div className={classes.commentFrom}>
+            <Avatar src={avatarSrc} alt={username} className={classes.smallAvatar} />
             <Typography variant="subtitle2">Usuario: </Typography>
           </div>
         )}
-        <div className="comment-content">
-          <IconButton {...{ component: RouterLink, to: `/profile/${idUsuario}` }} className="comment-avatar">
-            <Avatar src={avatarSrc} alt={username} className={isResponse && "comment-avatar-response"} />
+        <div className={classes.commentContent}>
+          <IconButton {...{ component: RouterLink, to: `/profile/${idUsuario}` }} className={classes.commentAvatar}>
+            <Avatar src={avatarSrc} alt={username} className={isResponse && classes.commentAvatarResponse} />
           </IconButton>
-          <Typography variant="h2" className="comment-header">
-            <Typography component="span" className="comment-username">
+          <Typography variant="h2" className={classes.commentHeader}>
+            <Typography {...{ component: RouterLink, to: `/profile/${idUsuario}` }} className={classes.commentUsername}>
               {username}
             </Typography>
-            <Typography component="time" color="textSecondary" className="comment-time">
+            <Typography component="time" color="textSecondary" className={classes.commentTime}>
               {timeSince(comment["created_at"])}
               {comment["created_at"] !== comment["updated_at"] && <span> · editado {timeSince(comment["updated_at"])}</span>}
             </Typography>
           </Typography>
-          <div className="comment-body">{textoComentario}</div>
-          <div className="comment-extra">
+          <div className={classes.commentBody}>{textoComentario}</div>
+          <div className={classes.flex}>
             <IconButton className={classes.thumbButton} disabled={!usuario} color={puntuacionUsuario && puntuacionUsuario.tipo === "positivo" ? "primary" : "inherit"} onClick={handleLike}>
-              <ThumbUp className="thumb-icon" />
+              <ThumbUp className={classes.thumbIcon} />
             </IconButton>
             <Typography className={classes.commentDate} color="textSecondary">
               {puntuacion || null}
             </Typography>
             <IconButton className={classes.thumbButton} disabled={!usuario} color={puntuacionUsuario && puntuacionUsuario.tipo === "negativo" ? "primary" : "inherit"} onClick={handleDislike}>
-              <ThumbDown className="thumb-icon" />
+              <ThumbDown className={classes.thumbIcon} />
             </IconButton>
             {!readOnly && (
-              <Button size="small" onClick={() => setMostrarResponder(true)}>
+              <Button size="small" disabled={!usuario} onClick={() => setMostrarResponder(true)}>
                 Responder
               </Button>
             )}
-            {usuario && (
+            {usuario && usuario.id === idUsuario && (
               <div hidden={!hovered}>
                 <IconButton size="small" aria-controls="comment-menu" aria-haspopup="true" onClick={handleClickComment}>
                   <MoreHoriz />
@@ -283,7 +257,7 @@ const Comment = ({ comment, from, line, isResponse, readOnly }) => {
               </Button>
               <Collapse in={showResponses}>
                 {respuestasComentarios.map((respuesta) => (
-                  <Comment key={respuesta.id.toString()} {...{ comment: respuesta, line }} isResponse />
+                  <Comment key={respuesta.id.toString()} {...{ comment: respuesta, noLine }} isResponse />
                 ))}
               </Collapse>
             </>

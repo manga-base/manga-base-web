@@ -1,30 +1,12 @@
 import { useState } from "react";
-import { Avatar, Box, Button, Container, Grid, IconButton, InputAdornment, makeStyles, TextField, Typography } from "@material-ui/core";
+import { Avatar, Box, Button, Container, Grid, IconButton, InputAdornment, TextField, Typography } from "@material-ui/core";
 import { LockOutlined, Visibility, VisibilityOff } from "@material-ui/icons";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: "100%",
-    marginTop: theme.spacing(1),
-    display: "flex",
-    flexDirection: "column",
-  },
-}));
+import useStyle from "./style";
 
 const SignUp = () => {
-  const classes = useStyles();
+  const classes = useStyle();
   const history = useHistory();
   const { signup } = useUser();
 

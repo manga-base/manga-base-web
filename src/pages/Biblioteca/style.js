@@ -9,13 +9,6 @@ const useStyle = makeStyles(
       flexWrap: "wrap",
       margin: "0 24px",
     },
-    title: {
-      display: "flex",
-      alignItems: "flex-end",
-      [theme.breakpoints.down("md")]: {
-        marginBottom: 16,
-      },
-    },
     filtersContainer: {
       width: 260,
       minWidth: 260,

@@ -23,7 +23,7 @@ const MangaCardContainer = ({ mangas, pagination, orderButtons, defaultView }) =
   useEffect(() => {
     setMangasMostrados(mangas);
     pagination && setNumMangasPorPagina(pagination);
-  }, [mangas]);
+  }, [mangas, pagination]);
 
   if (!mangasMostrados || mangasMostrados.length < 1) {
     return (
@@ -34,6 +34,7 @@ const MangaCardContainer = ({ mangas, pagination, orderButtons, defaultView }) =
   }
 
   const orderBy = (order, fun) => {
+    /* eslint no-eval: 0 */
     setOrdenMangas(order);
     let arrayOrdenada = mangas;
     arrayOrdenada.sort((x, y) => eval(fun));
@@ -136,7 +137,13 @@ const MangaCardContainer = ({ mangas, pagination, orderButtons, defaultView }) =
             />
           )}
           <FormControl style={{ position: "absolute", right: 0, top: "2em" }}>
-            <Select value={numMangasPorPagina} onChange={(e) => setNumMangasPorPagina(e.target.value)}>
+            <Select
+              value={numMangasPorPagina}
+              onChange={(e) => {
+                setPage(1);
+                setNumMangasPorPagina(e.target.value);
+              }}
+            >
               <MenuItem value={5}>5</MenuItem>
               <MenuItem value={10}>10</MenuItem>
               <MenuItem value={25}>25</MenuItem>

@@ -1,66 +1,29 @@
-import { AppBar, Avatar, Box, Card, CardContent, CardHeader, CardMedia, Chip, Divider, Grid, Hidden, IconButton, List, ListItem, ListItemAvatar, ListItemText, makeStyles, Paper, Tab, Typography } from "@material-ui/core";
-import { BarChart, Book, Bookmark, Cake, CalendarToday, Comment, DeleteForever, DoneAll, Favorite, FiberManualRecord, Grade, HourglassFull, Info, MenuBook, Pause, People, PersonAdd, Settings, Star, WatchLater } from "@material-ui/icons";
+import { AppBar, Avatar, Card, CardContent, CardHeader, CardMedia, Chip, Divider, Grid, Hidden, IconButton, List, ListItem, ListItemAvatar, ListItemText, Paper, Tab, Typography } from "@material-ui/core";
+import { BarChart, Book, Bookmark, Cake, CalendarToday, Comment, Favorite, Grade, HourglassFull, Info, MenuBook, People, PersonAdd, Settings, Star } from "@material-ui/icons";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { useState, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, Link as RouterLink } from "react-router-dom";
 import { CommentBox, Loading, MangaCardContainer, PieChart } from "../../components";
 import { useUser } from "../../context/UserContext";
 import { http } from "../../helpers/http";
 import { getProfile, setProfile } from "../../helpers/storage/profile";
 import { useSnackbar } from "notistack";
 import { ResponsiveCalendar } from "@nivo/calendar";
-import "./style.css";
+import useStyle from "./style";
+import useGlobalStyle from "../../style";
 
 const imgUrl = process.env["REACT_APP_IMG_URL"];
 
 const formatDate = (date, options) => new Date(date).toLocaleDateString("es-ES", options);
 
-const useStyle = makeStyles((theme) => ({
-  largeAvatar: {
-    position: "absolute",
-    top: 240,
-    width: theme.spacing(18),
-    height: theme.spacing(18),
-    border: "10px solid",
-    borderColor: theme.palette.background.paper,
-    backgroundColor: "#fff",
-  },
-  chip: {
-    margin: theme.spacing(0.5),
-  },
-  box: {
-    backgroundColor: theme.palette.background.paper,
-    width: "100%",
-    marginTop: "1.75rem",
-    borderRadius: 4,
-  },
-  backgroundTitle: {
-    backgroundColor: theme.palette.primary.main,
-    color: "#000",
-    borderRadius: "4px 4px 0 0",
-    width: "100%",
-    padding: 5,
-  },
-  noPadding: {
-    paddingLeft: 0,
-    paddingRight: 0,
-  },
-  avatarElevation: {
-    boxShadow: theme.shadows[3],
-  },
-  listItem: {
-    width: "auto",
-  },
-  activityHistoryGridItem: {
-    height: 250,
-  },
-}));
-
 const Profile = () => {
+  const localClass = useStyle();
+  const globalClass = useGlobalStyle();
+  const classes = { ...localClass, ...globalClass };
+
   const { usuario } = useUser();
   const { id, tab: paramTab } = useParams();
   const history = useHistory();
-  const classes = useStyle();
   const [infoPerfil, setInfoPerfil] = useState(null);
   const [perfilCargado, setPerfilCargado] = useState(false);
   const [tab, setTab] = useState("info");
@@ -85,7 +48,6 @@ const Profile = () => {
     const cargarPerfil = async (idUsuario) => {
       try {
         const { data } = await http.get(`/usuario/${idUsuario}/profile`);
-        console.log("Data user; ", data);
         setInfoPerfil(data);
         setProfile(id, data);
         setPerfilCargado(true);
@@ -94,7 +56,6 @@ const Profile = () => {
         enqueueSnackbar("Error al cargar el perfil", {
           variant: "error",
         });
-        console.error("Error al cargar el perfil: ", error);
       }
       const { data: responseData } = await http.get(`/amistades/${id}`);
       if (responseData.correcta) {
@@ -112,7 +73,7 @@ const Profile = () => {
     } else {
       cargarPerfil(id);
     }
-  }, [id, paramTab]);
+  }, [id, paramTab, history, enqueueSnackbar]);
 
   if (!perfilCargado) {
     return <Loading />;
@@ -126,31 +87,11 @@ const Profile = () => {
   const birthdayDate = formatDate(infoPerfil.birthdayDate, { year: "numeric", month: "long", day: "numeric" });
   const joinDate = formatDate(infoPerfil.created_at, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
 
-  const getListPorEsado = () => {
-    const { porEstado } = stats;
-    if (porEstado.length < 1) {
-      return (
-        <Typography className="vacioText" variant="body2">
-          Esto esta un poco vacío...
-        </Typography>
-      );
-    }
-
-    return porEstado.map((estado) => (
-      <ListItem key={estado.id.toString()}>
-        <ListItemAvatar>
-          <Avatar style={{ backgroundColor: coloresEstadosManga[estado.idEstado] }}>{["", <Book />, <DoneAll />, <WatchLater />, <Pause />, <DeleteForever />][estado.idEstado]}</Avatar>
-        </ListItemAvatar>
-        <ListItemText primary={estado.estado} secondary={estado.numMangas} />
-      </ListItem>
-    ));
-  };
-
-  const getLastMangaEntries = () => {
+  const LastMangaEntries = () => {
     const { lastMangaEntries } = stats;
     if (lastMangaEntries.length < 1) {
       return (
-        <Typography className="vacioText" variant="body2">
+        <Typography className={classes.vacioText} variant="body2">
           Aun no hay actividad.
         </Typography>
       );
@@ -160,7 +101,7 @@ const Profile = () => {
       <div key={manga.id.toString()}>
         {i !== 0 && <Divider variant="middle" />}
         <ListItem style={{ position: "relative" }}>
-          <div title={manga.estado} style={{ backgroundColor: coloresEstadosManga[manga.idEstado] }} className="statusList"></div>
+          <div title={manga.estado} style={{ backgroundColor: coloresEstadosManga[manga.idEstado] }} className={classes.statusList}></div>
           <ListItemAvatar>
             <Avatar alt={manga.tituloPreferido} src={imgUrl + "/manga/" + manga.foto} />
           </ListItemAvatar>
@@ -230,13 +171,13 @@ const Profile = () => {
         <Grid item xs={12} md={6}>
           <Grid container direction="column">
             <Typography variant="h5">Actividad Reciente</Typography>
-            <List className="fullWidthList">{getLastMangaEntries()}</List>
+            <List>
+              <LastMangaEntries />
+            </List>
           </Grid>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Grid container direction="column" alignItems="center">
-            <List className="fullWidthList">{getLastMangaEntries()}</List>
-          </Grid>
+          <Grid container direction="column" alignItems="center"></Grid>
         </Grid>
       </Grid>
     );
@@ -254,7 +195,7 @@ const Profile = () => {
 
     return (
       <>
-        <List className="statsList">
+        <List style={{ flexWrap: "wrap" }} className={classes.statsList}>
           {listItemsList.map(({ text, icon, data }) => (
             <ListItem key={text} className={classes.listItem}>
               <ListItemAvatar>
@@ -271,7 +212,7 @@ const Profile = () => {
             </ListItem>
           ))}
         </List>
-        <Grid container spacing={1} direction="column" className="gridStats">
+        <Grid container spacing={1} direction="column" className={classes.gridStatsChart}>
           <Grid item xs={12} style={{ width: 800, height: 500 }}>
             <Typography variant="h4">Distribución por estado</Typography>
             <PieChart data={porEstado} arrows />
@@ -309,19 +250,19 @@ const Profile = () => {
   };
 
   const CommentsTab = () => {
-    return <CommentBox {...{ comments: comentarios }} />;
+    return <CommentBox {...{ comments: comentarios }} readOnly from noLine />;
   };
 
   return (
     <>
-      <div className="main">
+      <div className={classes.mainContainer}>
         <Card>
-          <CardMedia className="largeBanner" image={bannerSrc} title={"Banner de " + infoPerfil.username} />
+          <CardMedia className={classes.banner} image={bannerSrc} title={"Banner de " + infoPerfil.username} />
           <CardContent>
             <Avatar alt={infoPerfil.username} src={avatarSrc} className={classes.largeAvatar} />
             <Grid container direction="row" justify="flex-end" alignItems="center">
               {usuario.id === infoPerfil.id ? (
-                <IconButton aria-label="Editar el perfil">
+                <IconButton {...{ component: RouterLink, to: `/settings` }} aria-label="Editar el perfil">
                   <Settings fontSize="default" />
                 </IconButton>
               ) : (
@@ -343,7 +284,7 @@ const Profile = () => {
 
         <TabContext value={tab}>
           <Paper>
-            <AppBar position="static" color="default" className="TabListAppBar">
+            <AppBar position="static" color="default" className={classes.TabListAppBar}>
               <TabList onChange={handleTabChange} variant="fullWidth" indicatorColor="primary" textColor="primary" centered aria-label="ventanas del perfil">
                 <Tab label="Información general" icon={<Info />} value="info" />
                 <Tab label="Favoritos" icon={<Favorite />} value="favoritos" />

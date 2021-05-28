@@ -18,6 +18,7 @@ const Biblioteca = () => {
   const localClass = useStyle();
   const globalClass = useGlobalStyle();
   const classes = { ...localClass, ...globalClass };
+
   const { enqueueSnackbar } = useSnackbar();
 
   const [datosCargados, setDatosCargados] = useState(false);
@@ -40,7 +41,7 @@ const Biblioteca = () => {
   const [revistasElegidas, setRevistasElegidas] = useState(revistas);
   const [generos, setGeneros] = useState([]);
   const [generosElegidos, setGenerosElegidos] = useState(generos);
-  const [nota, setNota] = useState([1, 10]);
+  const [nota, setNota] = useState([1, 5]);
 
   const icon = <CheckBoxOutlineBlank fontSize="small" />;
   const checkedIcon = <CheckBox fontSize="small" />;
@@ -53,114 +54,80 @@ const Biblioteca = () => {
     { label: "Géneros", values: generos, setFunction: setGenerosElegidos, value: generosElegidos },
   ];
 
-  // Cargar al principio
   useEffect(() => {
-    async function fetchData() {
+    const getMangas = async () => {
+      var posiblesMangas = getAllMangas();
+      if (posiblesMangas.length > 10) {
+        setMangas(posiblesMangas);
+        setMangasMostrados(posiblesMangas);
+        setMangasCargados(true);
+      } else {
+        try {
+          const { data } = await http.get(`/biblioteca/mangas`);
+          if (data.correcta) {
+            setMangas(data.datos);
+            setMangasMostrados(data.datos);
+            setStorageMangas(data.datos);
+          }
+          setMangasCargados(true);
+        } catch (error) {
+          enqueueSnackbar("Error al cargar los mangas", {
+            variant: "error",
+          });
+          setMangasCargados(true);
+        }
+      }
+    };
+
+    const getFilters = async () => {
+      var posiblesFiltros = getFiltros();
+      if (posiblesFiltros) {
+        const { estados: e, demografias: d, autores: a, revistas: r, generos: g } = posiblesFiltros;
+        setEstados(e);
+        setDemografias(d);
+        setAutores(a);
+        setRevistas(r);
+        setGeneros(g);
+      } else {
+        try {
+          const { data } = await http.get(`/biblioteca/filtros`);
+          if (data.correcta) {
+            const { estados: e, demografias: d, autores: a, revistas: r, generos: g } = data.datos;
+            setEstados(e);
+            setDemografias(d);
+            setAutores(a);
+            setRevistas(r);
+            setGeneros(g);
+            setFiltros(data.datos);
+          }
+        } catch (error) {
+          enqueueSnackbar("Error al cargar los filtros", {
+            variant: "error",
+          });
+        }
+      }
+    };
+
+    const init = async () => {
       await getMangas();
       await getFilters();
       let q = params.get("q");
       q && setValorDeBusqueda(q);
-      arrayFiltros.map(({ label, setFunction }) => {
+      arrayFiltros.forEach(({ label, setFunction }) => {
         label = `${label}[]`;
         let x = params.getAll(label);
         x && setFunction(x);
       });
       setDatosCargados(true);
-    }
-    fetchData();
+    };
+    init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Cargar al actualizar los filtros
   useEffect(() => {
     if (!mangasCargados) return;
 
-    filtrar();
-
-    if (!datosCargados) return;
-    valorDeBusqueda ? (params.has("q") ? params.set("q", valorDeBusqueda) : params.append("q", valorDeBusqueda)) : params.delete("q");
-
-    arrayFiltros.map(({ value, label }) => {
-      label = `${label}[]`;
-      if (value) {
-        params.delete(label);
-        value.forEach((x) => {
-          params.append(label, x);
-        });
-      } else {
-        if (params.has(label)) {
-          params.delete(label);
-        }
-      }
-    });
-
-    history.push({ search: params.toString() });
-  }, [valorDeBusqueda, estadosElegidos, demografiasElegidas, autoresElegidos, autoresElegidos, revistasElegidas, generosElegidos, nota, history]);
-
-  const getMangas = async () => {
-    var posiblesMangas = getAllMangas();
-    if (posiblesMangas.length > 10) {
-      setMangas(posiblesMangas);
-      setMangasMostrados(posiblesMangas);
-      setMangasCargados(true);
-    } else {
-      try {
-        const { data } = await http.get(`/biblioteca/mangas`);
-        if (data.correcta) {
-          setMangas(data.datos);
-          setMangasMostrados(data.datos);
-          setStorageMangas(data.datos);
-        }
-        setMangasCargados(true);
-      } catch (error) {
-        enqueueSnackbar("Error al cargar los mangas", {
-          variant: "error",
-        });
-        setMangasCargados(true);
-      }
-    }
-  };
-
-  const getFilters = async () => {
-    var posiblesFiltros = getFiltros();
-    if (posiblesFiltros) {
-      const { estados: e, demografias: d, autores: a, revistas: r, generos: g } = posiblesFiltros;
-      setEstados(e);
-      setDemografias(d);
-      setAutores(a);
-      setRevistas(r);
-      setGeneros(g);
-    } else {
-      try {
-        const { data } = await http.get(`/biblioteca/filtros`);
-        if (data.correcta) {
-          const { estados: e, demografias: d, autores: a, revistas: r, generos: g } = data.datos;
-          setEstados(e);
-          setDemografias(d);
-          setAutores(a);
-          setRevistas(r);
-          setGeneros(g);
-          setFiltros(data.datos);
-        }
-      } catch (error) {
-        enqueueSnackbar("Error al cargar los filtros", {
-          variant: "error",
-        });
-      }
-    }
-  };
-
-  const cleanFilters = () => {
-    setValorDeBusqueda("");
-    setEstadosElegidos([]);
-    setDemografiasElegidas([]);
-    setAutoresElegidos([]);
-    setRevistasElegidas([]);
-    setGenerosElegidos([]);
-    setNota([1, 10]);
-  };
-
-  const filtrar = () => {
-    if (!mangasCargados) return;
     var mangasFiltrados = mangas;
 
     const elNombreCoincide = (manga) => {
@@ -183,6 +150,36 @@ const Biblioteca = () => {
     // console.log("A", mangasFiltrados);
     setMangasMostrados(mangasFiltrados);
     // console.log("B", mangasFiltrados);
+
+    if (!datosCargados) return;
+    valorDeBusqueda ? (params.has("q") ? params.set("q", valorDeBusqueda) : params.append("q", valorDeBusqueda)) : params.delete("q");
+
+    arrayFiltros.forEach(({ value, label }) => {
+      label = `${label}[]`;
+      if (value) {
+        params.delete(label);
+        value.forEach((x) => {
+          params.append(label, x);
+        });
+      } else {
+        if (params.has(label)) {
+          params.delete(label);
+        }
+      }
+    });
+
+    history.push({ search: params.toString() });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [valorDeBusqueda, estadosElegidos, demografiasElegidas, autoresElegidos, autoresElegidos, revistasElegidas, generosElegidos, nota, history]);
+
+  const cleanFilters = () => {
+    setValorDeBusqueda("");
+    setEstadosElegidos([]);
+    setDemografiasElegidas([]);
+    setAutoresElegidos([]);
+    setRevistasElegidas([]);
+    setGenerosElegidos([]);
+    setNota([1, 10]);
   };
 
   const copiarUrl = () => {
@@ -197,9 +194,9 @@ const Biblioteca = () => {
     });
   };
 
-  const autocompleteModule = (label, values, setFunction, value) => {
+  const AutocompleteModule = ({ label, values, setFunction, value }) => {
     return (
-      <div className={classes.filterModule} key={label}>
+      <div className={classes.filterModule}>
         <Typography className={classes.filterTitle}>{label}</Typography>
         <div>
           <Autocomplete
@@ -259,7 +256,9 @@ const Biblioteca = () => {
               </Button>
             )}
           </div>
-          {arrayFiltros.map(({ label, values, setFunction, value }) => autocompleteModule(label, values, setFunction, value))}
+          {arrayFiltros.map((props, i) => (
+            <AutocompleteModule key={i.toString()} {...props} />
+          ))}
           <div className={classes.filterModule}>
             <Typography className={classes.filterTitle} id="nota-slider">
               Nota{" "}
@@ -268,7 +267,7 @@ const Biblioteca = () => {
               </Typography>
             </Typography>
             <div>
-              <Slider value={nota} min={1} max={10} onChange={(e, v) => setNota(v)} valueLabelDisplay="auto" aria-labelledby="nota-slider" />
+              <Slider value={nota} min={1} max={5} step={0.01} onChange={(e, v) => setNota(v)} valueLabelDisplay="auto" aria-labelledby="nota-slider" />
             </div>
           </div>
           <div className={[classes.filterModule, classes.centerText].join(" ")}>
