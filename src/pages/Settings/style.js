@@ -54,13 +54,15 @@ const useStyle = makeStyles((theme) => ({
     flexShrink: "1",
     marginRight: 24,
   },
-  inputAvatarContainer: {
+  inputEndItemContainer: {
     flexGrow: 0,
     flexShrink: 0,
-    borderRadius: "50%",
     marginLeft: 16,
-    overflow: "hidden",
     position: "relative",
+  },
+  inputAvatarContainer: {
+    borderRadius: "50%",
+    overflow: "hidden",
   },
   inputAvatar: {
     width: 60,

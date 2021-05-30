@@ -10,12 +10,12 @@ import { SnackbarProvider } from "notistack";
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <UserProvider>
-        <SnackbarProvider maxSnack={3}>
+      <SnackbarProvider maxSnack={3}>
+        <UserProvider>
           <CssBaseline />
           <App />
-        </SnackbarProvider>
-      </UserProvider>
+        </UserProvider>
+      </SnackbarProvider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")

@@ -12,7 +12,7 @@ import useStyle from "./style";
 const imgUrl = process.env["REACT_APP_IMG_URL"];
 
 const Settings = () => {
-  const { usuario } = useUser();
+  const { usuario, update } = useUser();
   const localClass = useStyle();
   const globalClass = useGlobalStyle();
   const classes = { ...localClass, ...globalClass };
@@ -46,7 +46,8 @@ const Settings = () => {
     var formData = new FormData();
     formData.append("avatar", files[0]);
     try {
-      const { data } = await http.post(`/usuario/avatar`, formData);
+      const response = await http.post(`/usuario/avatar`, formData);
+      const { data } = response;
       if (data.correcta) {
         enqueueSnackbar("Para poder ver los cambios inmediatamente vuelva a iniciar sessión.", {
           variant: "info",
@@ -105,7 +106,6 @@ const Settings = () => {
         { field: password, fun: setPasswordError, msg: "Proporcióna una contrasenya valida para enviar el formulario." },
         { field: username, fun: setUsernameError, msg: "Proporcióna un nombre de usuario valido." },
         { field: email, fun: setEmailError, msg: "Proporcióna un email valido." },
-        { field: biografia, fun: setBiografiaError, msg: "Proporcióna una biografia valida." },
       ].forEach(({ field, fun, msg }) => {
         if (!field || field.trim().length < 1) {
           fun(msg);
@@ -113,6 +113,7 @@ const Settings = () => {
           throw new Error(msg);
         } else {
           fun(false);
+          setBiografiaError(false);
         }
       });
     } catch (error) {
@@ -126,23 +127,32 @@ const Settings = () => {
       biografia,
     };
     if (fechaNacimiento) body.birthdayDate = fechaNacimiento;
-    try {
-      const { data } = await http.post(`/usuario/`, body);
-      if (data.correcta) {
-        enqueueSnackbar("Para poder ver los cambios inmediatamente vuelva a iniciar sessión.", {
-          variant: "info",
-        });
+    console.log("Body: ", body);
+    var error = await update(body);
+    if (error) {
+      const { field, msg } = error;
+      switch (field) {
+        case "username":
+          setUsernameError(msg);
+          break;
+        case "password":
+          setPasswordError(msg);
+          break;
+        case "biografia":
+          setBiografiaError(msg);
+          break;
+        case "email":
+          setEmailError(msg);
+          break;
+        default:
+          enqueueSnackbar(msg, {
+            variant: "error",
+          });
+          break;
       }
-      enqueueSnackbar(data.mensaje, {
-        variant: data.correcta ? "success" : "error",
-      });
-    } catch (error) {
-      enqueueSnackbar("Error al editar la información del perfil", {
-        variant: "error",
-      });
+    } else {
+      setModoEdicion(false);
     }
-    setModoEdicion(false);
-    console.log(body);
   };
 
   return (
@@ -235,17 +245,29 @@ const Settings = () => {
                     <TextField
                       type="date"
                       value={fechaNacimiento}
-                      fullWidth
                       className={!modoEdicion ? classes.disabledTextField : ""}
                       disabled={!modoEdicion}
                       onChange={(e) => {
                         setFechaNacimiento(e.target.value);
                       }}
+                      fullWidth={!fechaNacimiento}
                       error={!!fechaNacimientoError}
                       helperText={fechaNacimientoError}
                     />
                   </div>
                 </div>
+              </div>
+              <div className={classes.inputEndItemContainer}>
+                {modoEdicion && fechaNacimiento && (
+                  <Button
+                    onClick={(e) => {
+                      setFechaNacimiento("");
+                    }}
+                    variant="contained"
+                  >
+                    Borrar fecha
+                  </Button>
+                )}
               </div>
             </div>
             <Divider variant="middle" />
@@ -345,7 +367,7 @@ const Settings = () => {
                   </div>
                 </div>
               </div>
-              <div className={classes.inputAvatarContainer}>
+              <div className={[classes.inputAvatarContainer, classes.inputEndItemContainer].join(" ")}>
                 <Avatar className={classes.inputAvatar} src={avatarSrc} alt={username} />
                 <div className={classes.sombraAvatar}>
                   <CameraAlt fontSize="small" className={classes.iconaSombra} />
@@ -359,6 +381,7 @@ const Settings = () => {
               acceptedFiles={["image/*"]}
               filesLimit={1}
               showAlerts={false}
+              maxFileSize={2000000}
               onAlert={(message, variant) => enqueueSnackbar(message, { variant })}
               dropzoneText="Arrastra y suelta una foto aquí o haga clic"
               showFileNamesInPreview={false}
@@ -394,6 +417,7 @@ const Settings = () => {
               acceptedFiles={["image/*"]}
               filesLimit={1}
               showAlerts={false}
+              maxFileSize={2000000}
               onAlert={(message, variant) => enqueueSnackbar(message, { variant })}
               dropzoneText="Arrastra y suelta una foto aquí o haga clic"
               showFileNamesInPreview={false}
