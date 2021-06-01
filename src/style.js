@@ -82,6 +82,13 @@ const useGlobalStyle = makeStyles(
           marginBottom: 16,
         },
       },
+      niceLink: {
+        textDecoration: "none",
+        color: "inherit",
+        "&:hover": {
+          textDecoration: "underline",
+        },
+      },
     }),
   { classNamePrefix: "MangaBase" }
 );

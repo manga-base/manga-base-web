@@ -22,7 +22,7 @@ export const UserProvider = (props) => {
       }
 
       try {
-        const { data: usuario } = await http.get("/whoami", { cancelToken: source.token });
+        const { data: usuario } = await http.get("/whoami"); //, { cancelToken: source.token }
         setUsuario(usuario);
         setUsuarioCargado(true);
       } catch (error) {
@@ -84,6 +84,7 @@ export const UserProvider = (props) => {
       logout,
       signup,
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usuario, usuarioCargado]);
 
   return <UserContext.Provider value={value} {...props} />;

@@ -24,7 +24,7 @@ export default function App() {
           <PublicRoute exact path="/signup" component={SignUp} restricted />
           <PrivateRoute exact path="/profile/:id/:tab?" component={Profile} />
           <PrivateRoute exact path="/settings" component={Settings} />
-          <PrivateRoute exact path="/mis-mangas" component={MisMangas} />
+          <PrivateRoute exact path="/mis-mangas/:tab?" component={MisMangas} />
         </Switch>
       </div>
       <Footer />

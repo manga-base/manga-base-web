@@ -284,7 +284,7 @@ export default function Header() {
             .map(({ label, href, icon }) => (
               <ListItem
                 button
-                selected={location.pathname === href}
+                selected={location.pathname.includes(href)}
                 {...{
                   component: RouterLink,
                   to: href,

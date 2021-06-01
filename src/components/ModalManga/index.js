@@ -76,6 +76,9 @@ const ModalManga = ({ idManga, open, onClose }) => {
         variant: data.correcta ? "success" : "error",
         autoHideDuration: 1500,
       });
+      if (data.correcta) {
+        onClose();
+      }
     } catch (error) {
       enqueueSnackbar("Error al enviar los datos", {
         variant: "error",

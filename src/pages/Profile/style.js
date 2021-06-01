@@ -63,11 +63,30 @@ const useStyle = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     padding: 0,
+    margin: "0 0 24px",
     justifyContent: "space-around",
+  },
+  statsDivider: {
+    marginBottom: 24,
   },
   gridStatsChart: {
     maxWidth: "80%",
     height: 700,
+  },
+  commentPaper: {
+    marginTop: "1.75rem",
+    padding: "5px 0",
+  },
+  titleSocial: {
+    margin: theme.spacing(1, 0, 2),
+  },
+  teSigueChip: {
+    marginLeft: 5,
+  },
+  siguiendoButton: {
+    "&:hover": {
+      backgroundColor: "#f44336",
+    },
   },
 }));
 

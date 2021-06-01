@@ -34,7 +34,7 @@ const Comment = ({ comment, from, noLine, isResponse, readOnly, defaultOpen }) =
   const globalClass = useGlobalStyle();
   const classes = { ...localClass, ...globalClass };
 
-  const { id, texto, puntosPositivos, estadoUsuario, idUsuario, username, avatar, respuestas } = comment;
+  const { id, texto, puntosPositivos, estadoUsuario, idUsuario, username, avatar, respuestas, origen } = comment;
   const avatarSrc = `${imgUrl}avatars/${avatar}`;
   const [puntuacion, setPuntuacion] = useState(puntosPositivos);
   const [puntuacionUsuario, setPuntuacionUsuario] = useState(estadoUsuario);
@@ -162,6 +162,23 @@ const Comment = ({ comment, from, noLine, isResponse, readOnly, defaultOpen }) =
     setOpenDeleteDialog(false);
   };
 
+  const From = () => {
+    var src = origen.from === "usuario" ? `${imgUrl}avatars/${origen.avatar}` : `${imgUrl}manga/${origen.foto}`;
+    var label = origen.from === "usuario" ? origen.username : origen.tituloPreferido;
+    var to = origen.from === "usuario" ? `/profile/${origen.idUsuario}` : `/manga/${origen.idManga}`;
+    return (
+      <div className={classes.commentFrom}>
+        <Avatar {...{ src, alt: label }} className={classes.smallAvatar} />
+        <Typography variant="caption" color="textSecondary">
+          {origen.from === "usuario" ? "Perfil:" : "Manga:"} &nbsp;
+        </Typography>
+        <Typography variant="subtitle2" color="textSecondary" className={classes.niceLink} {...{ component: RouterLink, to }}>
+          {label}
+        </Typography>
+      </div>
+    );
+  };
+
   if (deleted) return null;
 
   if (enEdicion) {
@@ -172,12 +189,7 @@ const Comment = ({ comment, from, noLine, isResponse, readOnly, defaultOpen }) =
     <>
       <div className={classes.commentContainer} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
         {!noLine && <div className={classes.commentLine} onClick={handleClickShowResponses}></div>}
-        {from && (
-          <div className={classes.commentFrom}>
-            <Avatar src={avatarSrc} alt={username} className={classes.smallAvatar} />
-            <Typography variant="subtitle2">Usuario: </Typography>
-          </div>
-        )}
+        {from && origen && <From />}
         <div className={classes.commentContent}>
           <IconButton {...{ component: RouterLink, to: `/profile/${idUsuario}` }} className={classes.commentAvatar}>
             <Avatar src={avatarSrc} alt={username} className={isResponse && classes.commentAvatarResponse} />

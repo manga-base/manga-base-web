@@ -152,6 +152,7 @@ const Settings = () => {
       }
     } else {
       setModoEdicion(false);
+      enqueueSnackbar("Información modificada correctamente", { variant: "success" });
     }
   };
 
