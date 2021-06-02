@@ -381,7 +381,7 @@ export default function Header() {
   };
 
   const getLogo = (
-    <IconButton>
+    <IconButton component={RouterLink} to="/" >
       <img src={logo} alt="Logo" style={{ height: 40 }} />
     </IconButton>
   );

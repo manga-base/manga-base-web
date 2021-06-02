@@ -38,12 +38,19 @@ export const UserProvider = (props) => {
   }, []);
 
   const login = async (email, password) => {
-    const { data } = await http.post("/login", { email, password });
-    if (data.correcta) {
-      setUsuario(data.datos.usuario);
-      setToken(data.datos.token);
-    } else {
-      return data.mensaje;
+    try {
+      const { data } = await http.post("/login", { email, password });
+      console.log("Login: ", data);
+      if (data.correcta) {
+        setUsuario(data.datos.usuario);
+        setToken(data.datos.token);
+      } else {
+        return data.mensaje;
+      }
+    } catch (error) {
+      enqueueSnackbar("Error en el login", {
+        variant: "error",
+      });
     }
   };
 

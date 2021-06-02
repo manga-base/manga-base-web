@@ -88,7 +88,7 @@ export default function Login() {
           />
           <Box mt={2} mb={2}>
             <Grid container direction="row" justify="space-between" alignItems="center">
-              <Button to="/register" color="primary" component={RouterLink}>
+              <Button to="/signup" color="primary" component={RouterLink}>
                 Crear Cuenta
               </Button>
               <Button type="submit" variant="contained" color="primary">

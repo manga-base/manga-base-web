@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core";
 
 const useStyle = makeStyles((theme) => ({
-  paper: {
+  formContainer: {
     marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
@@ -17,8 +17,12 @@ const useStyle = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
   },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
+  contactDropzone: {
+    minHeight: 170,
+    maxHeight: 170,
+    overflow: "hidden",
+    marginTop: 16,
+    marginBottom: 8,
   },
 }));
 

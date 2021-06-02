@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Avatar, Box, Button, Container, Grid, IconButton, InputAdornment, TextField, Typography } from "@material-ui/core";
+import { Avatar, Link, Button, Container, Grid, IconButton, InputAdornment, TextField, Typography } from "@material-ui/core";
 import { LockOutlined, Visibility, VisibilityOff } from "@material-ui/icons";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
@@ -37,7 +37,7 @@ const SignUp = () => {
           <LockOutlined />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Registrate
+          Crea una cuenta
         </Typography>
         <form className={classes.form} onSubmit={handleSignUp}>
           <TextField
@@ -116,16 +116,16 @@ const SignUp = () => {
             }}
             type={showPassword ? "text" : "password"}
           />
-          <Box mt={2} mb={2}>
-            <Grid container direction="row" justify="space-between" alignItems="center">
-              <Button to="/register" color="primary" component={RouterLink}>
-                Crear Cuenta
-              </Button>
-              <Button type="submit" variant="contained" color="primary">
-                Iniciar sesión
-              </Button>
+          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+            Registrarse
+          </Button>
+          <Grid container justify="flex-end">
+            <Grid item>
+              <Link to="/login" component={RouterLink} variant="body2">
+                ¿Ya tienes una cuenta? Inicia sesión
+              </Link>
             </Grid>
-          </Box>
+          </Grid>
         </form>
       </div>
     </Container>
