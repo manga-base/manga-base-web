@@ -126,7 +126,7 @@ const Contact = () => {
             showPreviewsInDropzone={false}
             previewText="Imágenes seleccionadas"
             acceptedFiles={["image/*"]}
-            filesLimit={4}
+            filesLimit={3}
             showAlerts={false}
             maxFileSize={2000000}
             onAlert={(message, variant) => enqueueSnackbar(message, { variant })}

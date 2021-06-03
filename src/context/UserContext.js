@@ -71,7 +71,7 @@ export const UserProvider = (props) => {
   };
 
   const signup = async (usuario) => {
-    const { data } = await http.post("/signup", usuario);
+    const { data } = await http.post("/signup/", usuario);
     if (data.error) return data.error;
     setUsuario(data.usuario);
     setToken(data.token);

@@ -9,5 +9,6 @@ import Comment from "./Comment";
 import CommentBox from "./CommentBox";
 import CommentInput from "./CommentInput";
 import ModalManga from "./ModalManga";
+import Message from "./Message";
 
-export { Header, Footer, Loading, MangaCard, MangaCardContainer, PrivateRoute, PublicRoute, PieChart, Comment, CommentBox, CommentInput, ModalManga };
+export { Header, Footer, Loading, MangaCard, MangaCardContainer, PrivateRoute, PublicRoute, PieChart, Comment, CommentBox, CommentInput, ModalManga, Message };
