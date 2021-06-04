@@ -32,7 +32,7 @@ const Home = () => {
 
 function Item(props) {
   return (
-    <Paper style={{ height: 700 }}>
+    <Paper style={{ height: 600 }}>
       <h2>{props.item.name}</h2>
       <p>{props.item.description}</p>
 

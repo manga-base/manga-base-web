@@ -4,30 +4,60 @@ import { LockOutlined, Visibility, VisibilityOff } from "@material-ui/icons";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 import useStyle from "./style";
+import { useSnackbar } from "notistack";
 
 const SignUp = () => {
   const classes = useStyle();
   const history = useHistory();
   const { signup } = useUser();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const [error, setError] = useState("");
   const [username, setUsername] = useState("");
+  const [usernameError, setUsernameError] = useState(false);
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState(false);
   const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSignUp = async (event) => {
     event.preventDefault();
     if (password !== passwordConfirmation) {
-      setError("Las contraseñas no coinciden.");
+      setPasswordError("Las contraseñas no coinciden.");
       return;
-    } else {
-      setError("");
     }
-    const error = await signup({ username, email, password, passwordConfirmation });
-    setError(error);
-    if (!error) history.push("/");
+
+    setPasswordError(false);
+    setUsernameError(false);
+    setEmailError(false);
+
+    const mensaje = await signup({ username, email, password, passwordConfirmation });
+    if (mensaje) {
+      const { field, msg } = mensaje;
+      switch (field) {
+        case "username":
+          setUsernameError(msg);
+          break;
+        case "password":
+          setPasswordError(msg);
+          break;
+        case "email":
+          setEmailError(msg);
+          break;
+        case "default":
+        default:
+          enqueueSnackbar(msg, {
+            variant: "error",
+          });
+          break;
+      }
+    } else {
+      history.push("/");
+      enqueueSnackbar("Se ha enviado una verificación al correo proporcionado, verifica tu correo para poder iniciar sesión", {
+        variant: "info",
+      });
+    }
   };
 
   return (
@@ -45,7 +75,7 @@ const SignUp = () => {
             margin="normal"
             required
             fullWidth
-            error={Boolean(error)}
+            error={!!emailError}
             label="Correo electrónico"
             name="email"
             value={email}
@@ -54,14 +84,14 @@ const SignUp = () => {
             onChange={(event) => {
               setEmail(event.target.value);
             }}
-            helperText={error}
+            helperText={emailError}
           />
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            error={Boolean(error)}
+            error={!!usernameError}
             label="Nombre de usuario"
             name="username"
             value={username}
@@ -69,13 +99,14 @@ const SignUp = () => {
             onChange={(event) => {
               setUsername(event.target.value);
             }}
+            helperText={usernameError}
           />
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            error={Boolean(error)}
+            error={!!passwordError}
             label="Contraseña"
             name="password"
             value={password}
@@ -101,13 +132,14 @@ const SignUp = () => {
                 </InputAdornment>
               ),
             }}
+            helperText={passwordError}
           />
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            error={Boolean(error)}
+            error={!!passwordError}
             label="Confirma la Contraseña"
             name="passwordConfirmation"
             value={passwordConfirmation}

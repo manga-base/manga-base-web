@@ -7,7 +7,6 @@ import { useUser } from "../../context/UserContext";
 import { http } from "../../helpers/http";
 import useGlobalStyle from "../../style";
 import useStyle from "./style";
-import { sendEmail } from "../../helpers/Mail";
 
 const Admin = () => {
   const localClass = useStyle();
@@ -56,11 +55,6 @@ const Admin = () => {
       {mensajes.map((props, i) => (
         <Message key={i.toString()} {...props} />
       ))}
-      <div style={{ margin: "20px 0" }}>
-        <Button onClick={() => sendEmail()}>Enviar mail</Button>
-        <p>{process.env.REACT_APP_MJ_APIKEY_PUBLIC}</p>
-        <p>{process.env.REACT_APP_MJ_APIKEY_PRIVATE}</p>
-      </div>
     </div>
   );
 };

@@ -71,10 +71,19 @@ export const UserProvider = (props) => {
   };
 
   const signup = async (usuario) => {
-    const { data } = await http.post("/signup/", usuario);
-    if (data.error) return data.error;
-    setUsuario(data.usuario);
-    setToken(data.token);
+    try {
+      const { data } = await http.post("/signup/", usuario);
+      if (data.correcta) {
+        setUsuario(data.usuario);
+        setToken(data.token);
+      } else {
+        return data.mensaje;
+      }
+    } catch (error) {
+      enqueueSnackbar("Error al registrarse.", {
+        variant: "error",
+      });
+    }
   };
 
   const logout = () => {

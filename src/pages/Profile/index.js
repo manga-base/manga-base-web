@@ -391,7 +391,7 @@ const Profile = () => {
           <CardContent>
             <Avatar alt={infoPerfil.username} src={avatarSrc} className={classes.largeAvatar} />
             <Grid container direction="row" justify="flex-end" alignItems="center">
-              {usuario.id === id ? (
+              {usuario.id === infoPerfil.id ? (
                 <IconButton {...{ component: RouterLink, to: `/settings` }} aria-label="Editar el perfil">
                   <Settings fontSize="default" />
                 </IconButton>
