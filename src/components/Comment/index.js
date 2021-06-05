@@ -76,7 +76,7 @@ const Comment = ({ comment, from, noLine, isResponse, readOnly, defaultOpen }) =
   };
 
   const actualizarPuntuacion = async (tipo) => {
-    const response = await http.post("/puntuacion-comentario/", { idComentario: id, idUsuario: usuario.id, tipo });
+    const response = await http.post("/puntuacion-comentario/", { idComentario: id, tipo });
     const { data } = response;
     enqueueSnackbar(data.mensaje, {
       variant: data.correcta ? "success" : "error",
@@ -88,7 +88,7 @@ const Comment = ({ comment, from, noLine, isResponse, readOnly, defaultOpen }) =
   };
 
   const eliminarPuntuacion = async () => {
-    const response = await http.delete(`/puntuacion-comentario/${id}/${usuario.id}`);
+    const response = await http.delete(`/puntuacion-comentario/${id}`);
     const { data } = response;
     enqueueSnackbar(data.mensaje, {
       variant: data.correcta ? "success" : "error",
@@ -125,7 +125,7 @@ const Comment = ({ comment, from, noLine, isResponse, readOnly, defaultOpen }) =
   };
 
   const responderComentario = async (texto) => {
-    const response = await http.post(`/comentario/`, { texto, idUsuario: usuario.id, idPadre: id });
+    const response = await http.post(`/comentario/`, { texto, idPadre: id });
     const { data } = response;
     enqueueSnackbar(data.mensaje, {
       variant: data.correcta ? "success" : "error",

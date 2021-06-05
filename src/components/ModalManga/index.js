@@ -34,8 +34,10 @@ const ModalManga = ({ idManga, open, onClose }) => {
   const [estadosManga, setEstadosManga] = useState([]);
   const [capitulos, setCapitulos] = useState(0);
   const [capitulosLeidos, setCapitulosLeidos] = useState(0);
+  const [capitulosLeidosValid, setCapitulosLeidosValid] = useState(true);
   const [volumenes, setVolumenes] = useState(0);
   const [volumenesLeidos, setVolumenesLeidos] = useState(0);
+  const [volumenesLeidosValid, setVolumenesLeidosValid] = useState(true);
   const [nota, setNota] = useState(0);
   const [valorHoverNota, setValorHoverNota] = useState(0);
 
@@ -43,7 +45,7 @@ const ModalManga = ({ idManga, open, onClose }) => {
     if (!idManga || !usuario) return;
     const cargarInfo = async () => {
       try {
-        const { data } = await http.get(`/manga-usuario/${idManga}/${usuario.id}`);
+        const { data } = await http.get(`/manga-usuario/${idManga}`);
         if (data.correcta) {
           const { estados, capitulosManga, volumenesManga, favorito, nota, idEstado, capitulos: c, volumenes: v } = data.datos;
           setInfoUser(data.datos);
@@ -70,6 +72,12 @@ const ModalManga = ({ idManga, open, onClose }) => {
   }, [idManga, usuario]);
 
   const handleSubmitUserData = async () => {
+    if (!capitulosLeidosValid || !volumenesLeidosValid) {
+      enqueueSnackbar("Datos incoherentes revisa el número de capítulos o volúmenes.", {
+        variant: "error",
+      });
+      return;
+    }
     try {
       const { data } = await http.post(`/manga-usuario/`, { id: infoUser && infoUser.id, idManga, idUsuario: usuario.id, favorito: favorito ? "1" : "0", nota, idEstado: estado, volumenes: volumenesLeidos, capitulos: capitulosLeidos });
       enqueueSnackbar(data.mensaje, {
@@ -163,11 +171,11 @@ const ModalManga = ({ idManga, open, onClose }) => {
                     }}
                     value={capitulosLeidos}
                     name="capitulosLeidos"
-                    onChange={(e, v) => setCapitulosLeidos(v)}
-                    // onBlur={this.checkValidity}
+                    onChange={(e) => setCapitulosLeidos(e.target.value)}
+                    onBlur={(e) => setCapitulosLeidosValid(e.target.checkValidity())}
                     endAdornment={<InputAdornment position="end">/ {capitulos}</InputAdornment>}
                     className={classes.input}
-                    // error={!capitulosLeidosValid}
+                    error={!capitulosLeidosValid}
                   />
                   <IconButton aria-label="Añadir capitulo" color="primary" size="small" onClick={sumarCapitulo}>
                     <Add fontSize="inherit" />
@@ -184,11 +192,11 @@ const ModalManga = ({ idManga, open, onClose }) => {
                     }}
                     value={volumenesLeidos}
                     name="volumenesLeidos"
-                    onChange={(e, v) => setVolumenesLeidos(v)}
-                    //onBlur={this.checkValidity}
+                    onChange={(e) => setVolumenesLeidos(e.target.value)}
+                    onBlur={(e) => setVolumenesLeidosValid(e.target.checkValidity())}
                     endAdornment={<InputAdornment position="end">/ {volumenes}</InputAdornment>}
                     className={classes.input}
-                    // error={!volumenesLeidosValid}
+                    error={!volumenesLeidosValid}
                   />
                   <IconButton aria-label="Añadir capitulo" color="primary" size="small" onClick={sumarVolumen}>
                     <Add fontSize="inherit" />

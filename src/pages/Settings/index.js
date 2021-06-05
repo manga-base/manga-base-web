@@ -26,8 +26,6 @@ const Settings = () => {
   const [usernameError, setUsernameError] = useState(false);
   const [fechaNacimiento, setFechaNacimiento] = useState(usuario.birthdayDate || "");
   const [fechaNacimientoError, setFechaNacimientoError] = useState(false);
-  const [email, setEmail] = useState(usuario.email);
-  const [emailError, setEmailError] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
   const [biografia, setBiografia] = useState(usuario.biografia);
@@ -91,8 +89,6 @@ const Settings = () => {
     setUsernameError(false);
     setFechaNacimiento(usuario.birthdayDate || "");
     setFechaNacimientoError(false);
-    setEmail(usuario.email);
-    setEmailError(false);
     setPassword("");
     setPasswordError(false);
     setShowPassword(false);
@@ -105,7 +101,6 @@ const Settings = () => {
       [
         { field: password, fun: setPasswordError, msg: "Proporcióna una contrasenya valida para enviar el formulario." },
         { field: username, fun: setUsernameError, msg: "Proporcióna un nombre de usuario valido." },
-        { field: email, fun: setEmailError, msg: "Proporcióna un email valido." },
       ].forEach(({ field, fun, msg }) => {
         if (!field || field.trim().length < 1) {
           fun(msg);
@@ -122,7 +117,6 @@ const Settings = () => {
 
     let body = {
       username,
-      email,
       password,
       biografia,
     };
@@ -140,9 +134,6 @@ const Settings = () => {
           break;
         case "biografia":
           setBiografiaError(msg);
-          break;
-        case "email":
-          setEmailError(msg);
           break;
         default:
           enqueueSnackbar(msg, {
@@ -202,32 +193,6 @@ const Settings = () => {
                       }}
                       error={!!usernameError}
                       helperText={usernameError}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <Divider variant="middle" />
-            <div className={classes.input}>
-              <div className={classes.inputFlex}>
-                <div className={classes.inputContent}>
-                  <div className={classes.inputLabelContainer}>
-                    <Typography className={classes.inputLabel} color="textSecondary">
-                      Correo electrónico
-                    </Typography>
-                  </div>
-                  <div className={classes.inputField}>
-                    <TextField
-                      type="email"
-                      value={email}
-                      fullWidth
-                      className={!modoEdicion ? classes.disabledTextField : ""}
-                      disabled={!modoEdicion}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                      }}
-                      error={!!emailError}
-                      helperText={emailError}
                     />
                   </div>
                 </div>

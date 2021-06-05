@@ -54,9 +54,6 @@ const SignUp = () => {
       }
     } else {
       history.push("/");
-      enqueueSnackbar("Se ha enviado una verificación al correo proporcionado, verifica tu correo para poder iniciar sesión", {
-        variant: "info",
-      });
     }
   };
 

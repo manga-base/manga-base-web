@@ -65,6 +65,7 @@ const Profile = () => {
     const cargarPerfil = async (idUsuario) => {
       try {
         const { data } = await http.get(`/usuario/${idUsuario}/profile`);
+        console.log(data);
         const { datos, correcta, mensaje } = data;
         if (correcta) {
           estadoUsuario(datos);
@@ -192,7 +193,11 @@ const Profile = () => {
             <Avatar alt={manga.tituloPreferido} src={imgUrl + "/manga/" + manga.foto} />
           </ListItemAvatar>
           <ListItemText
-            primary={manga.tituloPreferido}
+            primary={
+              <Typography {...{ component: RouterLink, to: `/manga/${manga.id}` }} className={classes.niceLink}>
+                {manga.tituloPreferido}
+              </Typography>
+            }
             secondaryTypographyProps={{
               component: "div",
             }}

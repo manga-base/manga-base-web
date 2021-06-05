@@ -74,8 +74,9 @@ export const UserProvider = (props) => {
     try {
       const { data } = await http.post("/signup/", usuario);
       if (data.correcta) {
-        setUsuario(data.usuario);
-        setToken(data.token);
+        enqueueSnackbar("Se ha enviado una verificación al correo proporcionado, verifica tu correo para poder iniciar sesión", {
+          variant: "info",
+        });
       } else {
         return data.mensaje;
       }

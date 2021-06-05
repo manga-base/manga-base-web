@@ -93,9 +93,6 @@ const Message = ({ id, nombre, email, mensaje, created_at, fotos }) => {
       </AccordionDetails>
       <Divider />
       <AccordionActions>
-        <Button color="primary" size="small">
-          Responder
-        </Button>
         <Button color="secondary" size="small" onClick={handleRead}>
           Marcar como leído
         </Button>

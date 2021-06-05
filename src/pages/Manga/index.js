@@ -34,7 +34,7 @@ const Manga = () => {
     if (!id) history.push("/home");
     const cargarManga = async () => {
       try {
-        const { data } = await http.get(`/manga/${id}`);
+        const { data } = await http.get(`/manga/info/${id}`);
         if (data.correcta) {
           setInfoManga(data.datos);
           setManga(id, data.datos);
@@ -92,7 +92,7 @@ const Manga = () => {
 
   const newCommentToManga = async (idComentario) => {
     try {
-      const { data } = await http.post(`/comentario-manga/`, { idComentario, idManga: id, idUsuario: usuario.id });
+      const { data } = await http.post(`/comentario-manga/`, { idComentario, idManga: id });
       if (!data.correcta) {
         enqueueSnackbar("Error al insertar el comentrio al manga", {
           variant: "error",

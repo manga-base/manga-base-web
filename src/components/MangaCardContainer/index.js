@@ -66,9 +66,9 @@ const MangaCardContainer = ({ mangas, pagination, orderButtons, defaultView }) =
         <IconButton color={view === "compact" ? "primary" : "default"} onClick={() => setView("compact")}>
           <ViewHeadline />
         </IconButton>
-        <Divider orientation="vertical" style={{ height: 30, margin: "0 5px" }} />
         {orderButtons && (
           <>
+            <Divider orientation="vertical" style={{ height: 30, margin: "0 5px" }} />
             <Button aria-controls="order-menu" aria-haspopup="true" onClick={(e) => setAnchorOrdenarPor(e.currentTarget)} size="large" endIcon={<ArrowDropDown />}>
               Ordenar por: {ordenMangas}
             </Button>

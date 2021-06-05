@@ -60,6 +60,9 @@ const useGlobalStyle = makeStyles(
         height: 40,
       },
       commentAvatarResponse: {
+        position: "absolute",
+        left: 16,
+        marginTop: "calc(4px - 0.125rem)",
         width: 30,
         height: 30,
       },

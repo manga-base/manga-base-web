@@ -39,7 +39,7 @@ const CommentBox = ({ comments, readOnly, from, noLine, newCommentFunction }) =>
   }, [arrayComentarios]);
 
   const enviarComentario = async (texto) => {
-    const response = await http.post(`/comentario/`, { texto, idUsuario: usuario.id });
+    const response = await http.post(`/comentario/`, { texto });
     const { data } = response;
     enqueueSnackbar(data.mensaje, {
       variant: data.correcta ? "success" : "error",
