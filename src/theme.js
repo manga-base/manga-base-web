@@ -3,9 +3,6 @@ import { unstable_createMuiStrictModeTheme as createMuiTheme } from "@material-u
 const theme = createMuiTheme({
   typography: {
     fontFamily: ["Noto Sans JP", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"', "Arial", "sans-serif", '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"'].join(","),
-    button: {
-      textTransform: "none",
-    },
   },
   palette: {
     type: "dark",

@@ -284,7 +284,7 @@ const Comment = ({ comment, from, noLine, isResponse, readOnly, defaultOpen }) =
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDeleteDialogClose}>Cancelar</Button>
-          <Button onClick={eliminarComentario} color="primary" variant="contained" autoFocus>
+          <Button onClick={eliminarComentario} color="primary" variant="contained" className={classes.redButton} autoFocus>
             Eliminar
           </Button>
         </DialogActions>

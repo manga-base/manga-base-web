@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/core";
+import { red } from "@material-ui/core/colors";
 
 const useStyle = makeStyles((theme) => ({
   input: {
@@ -11,7 +12,7 @@ const useStyle = makeStyles((theme) => ({
   },
   inputContent: {
     display: "flex",
-    flexWrap: "warp",
+    flexWrap: "wrap",
     alignItems: "stretch",
     marginTop: "-4px",
   },
@@ -100,6 +101,8 @@ const useStyle = makeStyles((theme) => ({
   },
   sectionHeader: {
     padding: "24px 24px 8px",
+  },
+  headerFlex: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
@@ -116,6 +119,18 @@ const useStyle = makeStyles((theme) => ({
     height: 50,
     padding: 10,
     borderRadius: "50%",
+  },
+  redBox: {
+    borderColor: red[500],
+    color: red[500],
+  },
+  deleteAccountModal: {
+    width: 500,
+  },
+  modalInputs: {
+    display: "flex",
+    gap: 10,
+    marginBottom: 10,
   },
 }));
 

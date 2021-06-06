@@ -1,9 +1,10 @@
-import { Avatar, Box, Button, Divider, Grid, IconButton, InputAdornment, ListItem, TextField, Typography } from "@material-ui/core";
-import { CameraAlt, Visibility, VisibilityOff } from "@material-ui/icons";
+import { Avatar, Backdrop, Box, Button, Card, CardActions, CardContent, CardHeader, Divider, Fade, Grid, IconButton, InputAdornment, ListItem, Modal, TextField, Typography } from "@material-ui/core";
+import { CameraAlt, Close, Visibility, VisibilityOff } from "@material-ui/icons";
 import SettingsIcon from "@material-ui/icons/Settings";
 import { DropzoneDialog } from "material-ui-dropzone";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
+import { useHistory } from "react-router";
 import { useUser } from "../../context/UserContext";
 import { http } from "../../helpers/http";
 import useGlobalStyle from "../../style";
@@ -12,15 +13,18 @@ import useStyle from "./style";
 const imgUrl = process.env["REACT_APP_IMG_URL"];
 
 const Settings = () => {
-  const { usuario, update } = useUser();
   const localClass = useStyle();
   const globalClass = useGlobalStyle();
   const classes = { ...localClass, ...globalClass };
+
   const { enqueueSnackbar } = useSnackbar();
+  const { usuario, update, logout } = useUser();
+  const history = useHistory();
 
   const [modoEdicion, setModoEdicion] = useState(false);
   const [openAvatarDropzone, setOpenAvatarDropzone] = useState(false);
   const [openBannerDropzone, setOpenBannerDropzone] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   const [username, setUsername] = useState(usuario.username);
   const [usernameError, setUsernameError] = useState(false);
@@ -30,10 +34,13 @@ const Settings = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [biografia, setBiografia] = useState(usuario.biografia);
   const [biografiaError, setBiografiaError] = useState(false);
-
   const [showPassword, setShowPassword] = useState(false);
   const [avatar, setAvatar] = useState("");
   const [banner, setBanner] = useState("");
+
+  const [usernameDeleteConfirmation, setUsernameDeleteConfirmation] = useState("");
+  const [passwordDeleteConfirmation, setPasswordDeleteConfirmation] = useState("");
+  const [passwordDeleteConfirmationError, setPasswordDeleteConfirmationError] = useState(false);
 
   const avatarSrc = avatar || `${imgUrl}avatars/${usuario.avatar}`;
   const bannerSrc = banner || `${imgUrl}banners/${usuario.banner}`;
@@ -121,7 +128,6 @@ const Settings = () => {
       biografia,
     };
     if (fechaNacimiento) body.birthdayDate = fechaNacimiento;
-    console.log("Body: ", body);
     var error = await update(body);
     if (error) {
       const { field, msg } = error;
@@ -147,6 +153,35 @@ const Settings = () => {
     }
   };
 
+  const deleteAccount = async () => {
+    if (!passwordDeleteConfirmation || passwordDeleteConfirmation.trim().length < 1) {
+      setPasswordDeleteConfirmationError("Proporcióna una contrasenya valida.");
+      return;
+    } else {
+      setPasswordDeleteConfirmationError(false);
+    }
+    try {
+      const { data } = await http.post(`/usuario/delete/${usuario.id}`, { password: passwordDeleteConfirmation });
+      enqueueSnackbar(data.mensaje, {
+        variant: data.correcta ? "success" : "error",
+      });
+      if (data.correcta) {
+        logout();
+        history.push("/");
+      }
+    } catch (error) {
+      enqueueSnackbar("Error al enviar el banner", {
+        variant: "error",
+      });
+    }
+  };
+
+  const onCloseModal = () => {
+    setUsernameDeleteConfirmation("");
+    setPasswordDeleteConfirmation("");
+    setOpenModal(false);
+  };
+
   return (
     <div className={classes.mainContainer + " largeMargin"}>
       <div className={classes.title}>
@@ -154,20 +189,16 @@ const Settings = () => {
         <Typography variant="h4">Ajustes</Typography>
       </div>
       <Grid container direction="column" alignItems="center">
-        <Typography variant="h4" className={classes.sectionTitle}>
-          Información básica
-        </Typography>
-        <Typography color="textSecondary">Información básica, como el correo electronico y el avatar</Typography>
         <div className={classes.section}>
           <Box border={1} borderRadius={16}>
-            <div className={classes.sectionHeader}>
-              <Typography variant="h5">Información personal</Typography>
+            <div className={[classes.sectionHeader, classes.headerFlex].join(" ")}>
+              <Typography variant="h5">Información básica</Typography>
               <div>
                 <Button variant="contained" color="primary" onClick={modoEdicion ? handelSubmit : () => setModoEdicion(!modoEdicion)}>
                   {modoEdicion ? "Guardar" : "Editar"}
                 </Button>
                 {modoEdicion && (
-                  <Button className={classes.buttonMargin} variant="contained" onClick={handleCancelarEdicion}>
+                  <Button className={classes.buttonMargin} onClick={handleCancelarEdicion}>
                     Cancelar
                   </Button>
                 )}
@@ -396,6 +427,89 @@ const Settings = () => {
           </Box>
         </div>
       </Grid>
+
+      <Grid container direction="column" alignItems="center">
+        <div className={classes.section}>
+          <Box className={classes.redBox} border={1} borderRadius={16}>
+            <div className={classes.sectionHeader}>
+              <Typography variant="h5">Eliminar cuenta de usuario</Typography>
+              <Typography color="textSecondary">¡Advertencia! Esto eliminará permanentemente todos los datos de tu cuenta.</Typography>
+            </div>
+            <div className={classes.input}>
+              <Button className={classes.redButton} onClick={() => setOpenModal(true)}>
+                Eliminar cuenta
+              </Button>
+            </div>
+          </Box>
+        </div>
+      </Grid>
+
+      {/* Delete Account Modal */}
+      <Modal
+        className={classes.modal}
+        open={openModal}
+        onClose={onCloseModal}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={openModal}>
+          <div className={classes.deleteAccountModal}>
+            <Card>
+              <CardHeader
+                action={
+                  <IconButton aria-label="close" onClick={onCloseModal}>
+                    <Close />
+                  </IconButton>
+                }
+                title="¿Estás absolutamente seguro?"
+              />
+              <CardContent>
+                <Typography variant="body2" color="textSecondary" component="p">
+                  Esta acción no se puede deshacer. Esto eliminará permanentemente tu cuenta {usuario.username}, tu información sobre los mangas, comentarios y toda la información de tu cuenta.
+                </Typography>
+                <br />
+                <Typography variant="body2" color="textSecondary" component="p">
+                  Escriba su nombre de usuario y contraseña para confirmar.
+                </Typography>
+              </CardContent>
+              <CardActions disableSpacing style={{ display: "flex", flexDirection: "column" }}>
+                <div className={classes.modalInputs}>
+                  <TextField
+                    type="text"
+                    value={usernameDeleteConfirmation}
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    placeholder="Nombre de usuario"
+                    onChange={(e) => {
+                      setUsernameDeleteConfirmation(e.target.value);
+                    }}
+                  />
+                  <TextField
+                    type="password"
+                    value={passwordDeleteConfirmation}
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    placeholder="Contraseña"
+                    onChange={(e) => {
+                      setPasswordDeleteConfirmation(e.target.value);
+                    }}
+                    error={!!passwordDeleteConfirmationError}
+                    helperText={passwordDeleteConfirmationError}
+                  />
+                </div>
+                <Button disabled={usuario.username !== usernameDeleteConfirmation} onClick={deleteAccount} className={classes.redButton} fullWidth>
+                  Entiendo las consecuencias, eliminar esta cuenta
+                </Button>
+              </CardActions>
+            </Card>
+          </div>
+        </Fade>
+      </Modal>
     </div>
   );
 };

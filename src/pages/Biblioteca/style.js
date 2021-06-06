@@ -29,6 +29,12 @@ const useStyle = makeStyles(
       width: "100%",
       margin: "29px 24px 0 0",
     },
+    bibliotecaContent: {
+      display: "flex",
+      [theme.breakpoints.down("xs")]: {
+        display: "block",
+      },
+    },
   }),
   { classNamePrefix: "Biblioteca" }
 );

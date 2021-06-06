@@ -3,7 +3,7 @@ import { BarChart, Book, Bookmark, Cake, CalendarToday, Comment, Favorite, Grade
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { useState, useEffect } from "react";
 import { useHistory, useParams, Link as RouterLink } from "react-router-dom";
-import { CommentBox, Loading, MangaCardContainer, PieChart } from "../../components";
+import { Bar, CommentBox, Loading, MangaCardContainer, Pie } from "../../components";
 import { useUser } from "../../context/UserContext";
 import { http } from "../../helpers/http";
 import { getProfile, setProfile } from "../../helpers/storage/profile";
@@ -50,6 +50,7 @@ const Profile = () => {
     }
 
     const estadoUsuario = (datos) => {
+      if (!usuario) return;
       if (datos.seguidores.find((seguidor) => seguidor.id === usuario.id)) {
         setLeSigues(true);
       } else {
@@ -64,8 +65,9 @@ const Profile = () => {
 
     const cargarPerfil = async (idUsuario) => {
       try {
-        const { data } = await http.get(`/usuario/${idUsuario}/profile`);
-        console.log(data);
+        var url = usuario ? `/usuario/${idUsuario}/profile` : `/public-usuario/${idUsuario}/profile`;
+        const { data } = await http.get(url);
+        console.log("Profile", data);
         const { datos, correcta, mensaje } = data;
         if (correcta) {
           estadoUsuario(datos);
@@ -275,7 +277,7 @@ const Profile = () => {
   };
 
   const StatsTab = () => {
-    const { totalMangas, totalVolumenesLeidos, totalCapitulosLeidos, totalMangasPorLeer, avgNota, porEstado } = stats;
+    const { totalMangas, totalVolumenesLeidos, totalCapitulosLeidos, totalMangasPorLeer, avgNota, porEstado, porNota } = stats;
     const listItemsList = [
       { text: "Mangas en total", icon: <MenuBook />, data: totalMangas },
       { text: "Tomos Leidos", icon: <Book />, data: totalVolumenesLeidos },
@@ -307,23 +309,27 @@ const Profile = () => {
         <Grid container spacing={1} direction="column" className={classes.gridStatsChart}>
           <Grid item xs={12} style={{ width: 800, height: 500 }}>
             <Typography variant="h4">Distribución por estado</Typography>
-            <PieChart data={porEstado} arrows />
+            <Pie data={porEstado} arrows noLegend />
           </Grid>
           <Grid item xs={6} style={{ width: "100%", height: 300 }}>
-            <PieChart data={porEstado} arrows />
+            <Pie data={porEstado} arrows />
           </Grid>
           <Grid item xs={6} style={{ width: "100%", height: 300 }}>
-            <PieChart data={porEstado} />
+            <Pie data={porEstado} />
           </Grid>
         </Grid>
+        <div style={{ width: "100%", height: 500 }}>
+          <Bar data={porNota} />
+        </div>
       </>
     );
   };
 
   const SocialTab = () => {
-    const UserItem = ({ id, username, avatar, biografia }) => {
+    const UserItem = ({ i, id, username, avatar, biografia }) => {
       return (
         <>
+          {i !== 0 && <Divider variant="middle" />}
           <ListItem>
             <ListItemAvatar>
               <IconButton {...{ component: RouterLink, to: `/profile/${id}` }}>
@@ -339,7 +345,6 @@ const Profile = () => {
               secondary={biografia}
             />
           </ListItem>
-          <Divider variant="inset" component="li" />
         </>
       );
     };
@@ -347,8 +352,8 @@ const Profile = () => {
     const UsersContainer = ({ users }) => {
       return (
         <List>
-          {users.map((props) => (
-            <UserItem key={props.username} {...props} />
+          {users.map((props, i) => (
+            <UserItem key={props.username} i={i} {...props} />
           ))}
         </List>
       );
@@ -396,7 +401,7 @@ const Profile = () => {
           <CardContent>
             <Avatar alt={infoPerfil.username} src={avatarSrc} className={classes.largeAvatar} />
             <Grid container direction="row" justify="flex-end" alignItems="center">
-              {usuario.id === infoPerfil.id ? (
+              {usuario && usuario.id === infoPerfil.id ? (
                 <IconButton {...{ component: RouterLink, to: `/settings` }} aria-label="Editar el perfil">
                   <Settings fontSize="default" />
                 </IconButton>
@@ -405,14 +410,14 @@ const Profile = () => {
                   {hoverFollowButton ? "Dejar de seguir" : "Siguiendo"}
                 </Button>
               ) : (
-                <IconButton onClick={handleFollow} aria-label="Añadir amigo">
+                <IconButton disabled={!usuario} onClick={handleFollow} aria-label="Añadir amigo">
                   <PersonAdd fontSize="default" />
                 </IconButton>
               )}
             </Grid>
             <Typography gutterBottom variant="h5" component="h2">
               {infoPerfil.username}
-              {usuario.id !== id && teSigue && <Chip variant="outlined" color="secondary" label="Te sigue" size="small" className={classes.teSigueChip} />}
+              {usuario && usuario.id !== id && teSigue && <Chip variant="outlined" color="secondary" label="Te sigue" size="small" className={classes.teSigueChip} />}
             </Typography>
             <Chip size="small" icon={<CalendarToday fontSize="small" />} label={joinDate} className={classes.chip} title={"Se unió el " + joinDate} />
             {birthdayDate && <Chip size="small" icon={<Cake fontSize="small" />} label={birthdayDate} className={classes.chip} title="Fecha de nacimiento" />}

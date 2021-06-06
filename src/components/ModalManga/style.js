@@ -21,20 +21,6 @@ const useStyle = makeStyles((theme) => ({
       },
     },
   },
-  modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  paperModal: {
-    position: "relative",
-    width: 500,
-    backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(1),
-    borderRadius: 4,
-  },
   notaUser: {
     textAlign: "center",
     height: 60,

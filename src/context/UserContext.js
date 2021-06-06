@@ -40,7 +40,6 @@ export const UserProvider = (props) => {
   const login = async (email, password) => {
     try {
       const { data } = await http.post("/login", { email, password });
-      console.log("Login: ", data);
       if (data.correcta) {
         setUsuario(data.datos.usuario);
         setToken(data.datos.token);

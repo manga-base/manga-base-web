@@ -1,4 +1,5 @@
 import { createStyles, makeStyles } from "@material-ui/core";
+import { red } from "@material-ui/core/colors";
 
 const useGlobalStyle = makeStyles(
   (theme) =>
@@ -61,7 +62,6 @@ const useGlobalStyle = makeStyles(
       },
       commentAvatarResponse: {
         position: "absolute",
-        left: 16,
         marginTop: "calc(4px - 0.125rem)",
         width: 30,
         height: 30,
@@ -90,6 +90,27 @@ const useGlobalStyle = makeStyles(
         color: "inherit",
         "&:hover": {
           textDecoration: "underline",
+        },
+      },
+      modal: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      },
+      paperModal: {
+        position: "relative",
+        width: 500,
+        backgroundColor: theme.palette.background.paper,
+        border: "2px solid #000",
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(1),
+        borderRadius: 4,
+      },
+      redButton: {
+        color: theme.palette.getContrastText(red[500]),
+        backgroundColor: red[500],
+        "&:hover": {
+          backgroundColor: red[700],
         },
       },
     }),

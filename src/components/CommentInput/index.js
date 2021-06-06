@@ -34,7 +34,7 @@ const CommentInput = ({ onSubmit, onClose, initialValue, submitButonText, placeh
   return (
     <div className={classes.commentContainer}>
       <div className={classes.commentContent}>
-        <Avatar src={avatarSrc} alt={username} className={response ? classes.commentAvatarResponse : classes.commentAvatar} />
+        <Avatar src={avatarSrc} alt={username} className={response ? classes.commentInputAvatarResponse : classes.commentAvatar} />
         <div className={classes.commentBody}>
           <TextField {...{ placeholder, autoFocus }} disabled={!usuario} className={classes.input} size="small" fullWidth multiline rowsMax={4} value={textoComentario} onFocus={() => setShowButtons(true)} onChange={(e) => setTextoComentario(e.target.value)} />
         </div>

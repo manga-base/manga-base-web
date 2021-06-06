@@ -37,7 +37,6 @@ const Home = () => {
     const getUsuariosDestacados = async () => {
       try {
         const { data } = await http.get(`/public-usuario/destacados`);
-        console.log(data);
         if (data.correcta) {
           setUsuariosDestacados(data.datos);
         }
@@ -50,7 +49,7 @@ const Home = () => {
 
     getMangasRecomendados();
     getUsuariosDestacados();
-  }, []);
+  }, [enqueueSnackbar]);
 
   return (
     <Container>

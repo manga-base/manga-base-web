@@ -23,7 +23,7 @@ export default function App() {
           <PublicRoute exact path="/contact" component={Contact} />
           <PublicRoute exact path="/login" component={Login} restricted />
           <PublicRoute exact path="/signup" component={SignUp} restricted />
-          <PrivateRoute exact path="/profile/:id/:tab?" component={Profile} />
+          <PublicRoute exact path="/profile/:id/:tab?" component={Profile} />
           <PrivateRoute exact path="/settings" component={Settings} />
           <PrivateRoute exact path="/mis-mangas/:tab?" component={MisMangas} />
           <PrivateRoute exact path="/admin" component={Admin} />

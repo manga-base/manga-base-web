@@ -20,6 +20,13 @@ const useStyle = makeStyles((theme) => ({
       padding: "6px 0 4px",
     },
   },
+  commentInputAvatarResponse: {
+    position: "absolute",
+    marginTop: "calc(4px - 0.125rem)",
+    width: 30,
+    height: 30,
+    left: 16,
+  },
 }));
 
 export default useStyle;

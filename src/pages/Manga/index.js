@@ -87,7 +87,7 @@ const Manga = () => {
   };
 
   const handleChipClick = (e) => {
-    //console.log("Chip click", e);
+    console.log("Chip click", e.target.dataset.type, e.target.innerText);
   };
 
   const newCommentToManga = async (idComentario) => {
@@ -143,32 +143,32 @@ const Manga = () => {
             <div className={classes.chipContainer}>
               <Typography>Autor/es: </Typography>
               {infoManga.autores.map((autor) => {
-                return <Chip key={autor} label={autor} onClick={handleChipClick} />;
+                return <Chip key={autor} label={autor} data-type="autor" onClick={handleChipClick} />;
               })}
             </div>
             <div className={classes.chipContainer}>
               <Typography>Revista/s: </Typography>
               {infoManga.revistas.map((revista) => {
-                return <Chip key={revista} label={revista} onClick={handleChipClick} />;
+                return <Chip key={revista} label={revista} data-type="revista" onClick={handleChipClick} />;
               })}
             </div>
             <div className={classes.chipContainer}>
               <Typography>Demografia: </Typography>
-              <Chip key={infoManga.id} label={infoManga.demografia} onClick={handleChipClick} />
+              <Chip key={infoManga.id} label={infoManga.demografia} data-type="demografia" onClick={handleChipClick} />
             </div>
             <div className={classes.chipContainer}>
               <Typography>Géneros:</Typography>
               {infoManga.generos.map((genero) => {
-                return <Chip key={genero} label={genero} onClick={handleChipClick} />;
+                return <Chip key={genero} label={genero} data-type="genero" onClick={handleChipClick} />;
               })}
             </div>
             <div className={classes.chipContainer}>
               <Typography>Capitulos: </Typography>
-              <Chip label={infoManga.capitulos || "?"} onClick={handleChipClick} />
+              <Chip label={infoManga.capitulos || "?"} />
             </div>
             <div className={classes.chipContainer}>
               <Typography>Volumenes: </Typography>
-              <Chip label={infoManga.volumenes} onClick={handleChipClick} />
+              <Chip label={infoManga.volumenes} />
             </div>
           </Grid>
         </Grid>

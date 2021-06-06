@@ -1,4 +1,4 @@
-import { Backdrop, Box, Button, Fade, FormControl, Grid, IconButton, Input, InputAdornment, MenuItem, Modal, Select, Typography } from "@material-ui/core";
+import { Backdrop, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fade, FormControl, Grid, IconButton, Input, InputAdornment, MenuItem, Modal, Select, Typography } from "@material-ui/core";
 import { Close, Star, StarBorder, Add } from "@material-ui/icons";
 import { Rating } from "@material-ui/lab";
 import { useSnackbar } from "notistack";
@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Loading } from "..";
 import { useUser } from "../../context/UserContext";
 import { http } from "../../helpers/http";
+import useGlobalStyle from "../../style";
 import useStyle from "./style";
 
 const coloresEstadosManga = ["transparent", "#388e3c", "#2196f3", "#f57f17", "#757575", "#f44336"];
@@ -23,9 +24,12 @@ const labelsNota = {
 };
 
 const ModalManga = ({ idManga, open, onClose }) => {
+  const localClass = useStyle();
+  const globalClass = useGlobalStyle();
+  const classes = { ...localClass, ...globalClass };
+
   const { enqueueSnackbar } = useSnackbar();
   const { usuario } = useUser();
-  const classes = useStyle();
 
   const [infoUser, setInfoUser] = useState(null);
   const [infoUserCargada, setInfoUserCargada] = useState(false);
@@ -40,6 +44,7 @@ const ModalManga = ({ idManga, open, onClose }) => {
   const [volumenesLeidosValid, setVolumenesLeidosValid] = useState(true);
   const [nota, setNota] = useState(0);
   const [valorHoverNota, setValorHoverNota] = useState(0);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   useEffect(() => {
     if (!idManga || !usuario) return;
@@ -78,17 +83,44 @@ const ModalManga = ({ idManga, open, onClose }) => {
       });
       return;
     }
+    const body = {
+      idManga,
+      favorito: favorito ? "1" : "0",
+      nota,
+      idEstado: estado,
+      volumenes: volumenesLeidos,
+      capitulos: capitulosLeidos,
+    };
+    if (infoUser && infoUser.id) {
+      body.id = infoUser.id;
+    }
     try {
-      const { data } = await http.post(`/manga-usuario/`, { id: infoUser && infoUser.id, idManga, idUsuario: usuario.id, favorito: favorito ? "1" : "0", nota, idEstado: estado, volumenes: volumenesLeidos, capitulos: capitulosLeidos });
+      const { data } = await http.post(`/manga-usuario/`, body);
       enqueueSnackbar(data.mensaje, {
         variant: data.correcta ? "success" : "error",
-        autoHideDuration: 1500,
       });
       if (data.correcta) {
         onClose();
       }
     } catch (error) {
       enqueueSnackbar("Error al enviar los datos", {
+        variant: "error",
+      });
+    }
+  };
+
+  const eliminarInfo = async () => {
+    if (!infoUser || !infoUser.id) return;
+    try {
+      const { data } = await http.delete(`/manga-usuario/${infoUser.id}`);
+      enqueueSnackbar(data.mensaje, {
+        variant: data.correcta ? "success" : "error",
+      });
+      if (data.correcta) {
+        onClose();
+      }
+    } catch (error) {
+      enqueueSnackbar("Error al eliminar los datos", {
         variant: "error",
       });
     }
@@ -104,6 +136,10 @@ const ModalManga = ({ idManga, open, onClose }) => {
     var volL = parseInt(volumenesLeidos);
     var vol = parseInt(volumenes) || 9999999;
     if (volL < vol) setVolumenesLeidos(volL + 1);
+  };
+
+  const handleDeleteDialogClose = () => {
+    setOpenDeleteDialog(false);
   };
 
   if (!idManga || !usuario) return <></>;
@@ -127,7 +163,7 @@ const ModalManga = ({ idManga, open, onClose }) => {
             <IconButton aria-label="Close" onClick={onClose}>
               <Close />
             </IconButton>
-            <h2>Editar información manga</h2>
+            <h2>Editar información del manga</h2>
             <Button variant="contained" color="primary" onClick={handleSubmitUserData}>
               Guardar
             </Button>
@@ -208,6 +244,35 @@ const ModalManga = ({ idManga, open, onClose }) => {
                   <Rating name="nota-user-manga" value={parseFloat(nota)} precision={0.5} onChange={(e, v) => setNota(v)} onChangeActive={(e, v) => setValorHoverNota(v)} />
                   {nota !== null && <Box ml={2}>{labelsNota[valorHoverNota !== -1 ? valorHoverNota : nota]}</Box>}
                 </div>
+              </Grid>
+              <Grid container justify="flex-end" item sm={12}>
+                {infoUser && infoUser.id && (
+                  <>
+                    <Button
+                      className={classes.redButton}
+                      size="small"
+                      variant="contained"
+                      onClick={() => {
+                        setOpenDeleteDialog(true);
+                      }}
+                    >
+                      Eliminar información del manga
+                    </Button>
+                    {/* Dialog */}
+                    <Dialog open={openDeleteDialog} onClose={handleDeleteDialogClose} aria-labelledby="dialog-delete-title" aria-describedby="dialog-delete-description">
+                      <DialogTitle id="dialog-delete-title">Eliminar información del manga</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText id="dialog-delete-description">¿Quieres eliminar tu información del manga definitivamente?</DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={handleDeleteDialogClose}>Cancelar</Button>
+                        <Button onClick={eliminarInfo} color="primary" variant="contained" className={classes.redButton} autoFocus>
+                          Eliminar
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
+                  </>
+                )}
               </Grid>
             </Grid>
           </div>

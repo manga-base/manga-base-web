@@ -2,7 +2,7 @@ import { useTheme } from "@material-ui/core";
 import { ResponsivePie } from "@nivo/pie";
 import { animated } from "@react-spring/web";
 
-const PieChart = ({ data, arrows = false }) => {
+const Pie = ({ data, arrows = false, noLegend = false }) => {
   const theme = useTheme();
   data = data.sort(({ value: valueA }, { value: valueB }) => valueB - valueA);
   const margin = { top: 40, right: 80, bottom: 80, left: 80 };
@@ -11,6 +11,12 @@ const PieChart = ({ data, arrows = false }) => {
   const defs = [];
   const random = (max, min) => Math.floor(Math.random() * max) + min;
 
+  /**
+   * GeneratorFunction
+   *
+   * Aleatoritzar patrons, però que no es repetesquin
+   *
+   */
   function* shuffle(array) {
     var i = array.length;
     while (i--) {
@@ -23,19 +29,38 @@ const PieChart = ({ data, arrows = false }) => {
   const getRandomPattern = () => {
     const id = `pattern-${Math.random().toString(36).substr(2, 5)}`;
     const type = patterns.next().value;
-    const options = type === "patternLines" ? { spacing: random(4, 8), rotation: random(0, 360), lineWidth: random(1, 7) } : { size: random(1, 12), padding: random(1, 5), stagger: Math.random() < 0.5 };
+    const options = type === "patternLines" ? { spacing: random(4, 6), rotation: random(0, 360), lineWidth: random(1, 7) } : { size: random(1, 12), padding: random(1, 5), stagger: Math.random() < 0.5 };
     const pattern = {
       id,
       type,
       ...options,
       background: "inherit",
-      color: "rgba(255, 255, 255, 0.3)",
+      color: "rgba(255, 255, 255, 0.5)",
     };
     defs.push(pattern);
     return id;
   };
 
   const fill = data.map((v) => ({ match: { label: v.label }, id: getRandomPattern() }));
+
+  const legends = !noLegend
+    ? [
+        {
+          anchor: "right",
+          direction: "column",
+          justify: false,
+          translateX: 0,
+          translateY: 0,
+          itemsSpacing: 9,
+          itemWidth: 15,
+          itemHeight: 15,
+          itemDirection: "left-to-right",
+          itemOpacity: 1,
+          symbolSize: 19,
+          symbolShape: "circle",
+        },
+      ]
+    : [];
 
   return (
     <ResponsivePie
@@ -80,23 +105,8 @@ const PieChart = ({ data, arrows = false }) => {
             </text>
           </animated.g>
         ),
+        legends,
       }}
-      legends={[
-        {
-          anchor: "right",
-          direction: "column",
-          justify: false,
-          translateX: 0,
-          translateY: 0,
-          itemsSpacing: 9,
-          itemWidth: 15,
-          itemHeight: 15,
-          itemDirection: "left-to-right",
-          itemOpacity: 1,
-          symbolSize: 19,
-          symbolShape: "circle",
-        },
-      ]}
       theme={{
         textColor: "#ffffffb3",
         fontSize: 14,
@@ -110,4 +120,4 @@ const PieChart = ({ data, arrows = false }) => {
   );
 };
 
-export default PieChart;
+export default Pie;

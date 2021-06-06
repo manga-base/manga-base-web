@@ -246,7 +246,7 @@ const Biblioteca = () => {
           }}
         />
       </div>
-      <div style={{ display: "flex" }}>
+      <div className={classes.bibliotecaContent}>
         <div className={classes.filtersContainer}>
           <div className={[classes.filterModule, classes.flexContainer].join(" ")}>
             <Typography variant="h5">Filtros</Typography>
@@ -271,7 +271,7 @@ const Biblioteca = () => {
             </div>
           </div>
           <div className={[classes.filterModule, classes.centerText].join(" ")}>
-            <Button startIcon={<Share />} variant="contained" color="primary" onClick={copiarUrl}>
+            <Button startIcon={<Share fontSize="small" />} variant="contained" size="small" color="primary" onClick={copiarUrl}>
               Compartir busqueda
             </Button>
           </div>
