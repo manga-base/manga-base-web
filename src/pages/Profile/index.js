@@ -3,7 +3,7 @@ import { BarChart, Book, Bookmark, Cake, CalendarToday, Comment, Favorite, Grade
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { useState, useEffect } from "react";
 import { useHistory, useParams, Link as RouterLink } from "react-router-dom";
-import { Bar, CommentBox, Loading, MangaCardContainer, Pie } from "../../components";
+import { Bar, CommentBox, Line, Loading, MangaCardContainer, Pie } from "../../components";
 import { useUser } from "../../context/UserContext";
 import { http } from "../../helpers/http";
 import { getProfile, setProfile } from "../../helpers/storage/profile";
@@ -228,7 +228,7 @@ const Profile = () => {
     var d = new Date();
     return (
       <Grid container direction="row" alignItems="stretch" justify="center">
-        <Hidden smDown>
+        <Hidden xsDown>
           <Grid item xs={12}>
             <Typography variant="h5">Historial de actividad</Typography>
             <div className={classes.activityHistoryGridItem}>
@@ -277,7 +277,7 @@ const Profile = () => {
   };
 
   const StatsTab = () => {
-    const { totalMangas, totalVolumenesLeidos, totalCapitulosLeidos, totalMangasPorLeer, avgNota, porEstado, porNota } = stats;
+    const { totalMangas, totalVolumenesLeidos, totalCapitulosLeidos, totalMangasPorLeer, avgNota, porEstado, porDemografia, porNota, porAño } = stats;
     const listItemsList = [
       { text: "Mangas en total", icon: <MenuBook />, data: totalMangas },
       { text: "Tomos Leidos", icon: <Book />, data: totalVolumenesLeidos },
@@ -288,7 +288,7 @@ const Profile = () => {
 
     return (
       <>
-        <List style={{ flexWrap: "wrap" }} className={classes.statsList}>
+        <List className={classes.statsList}>
           {listItemsList.map(({ text, icon, data }) => (
             <ListItem key={text} className={classes.listItem}>
               <ListItemAvatar>
@@ -306,21 +306,42 @@ const Profile = () => {
           ))}
         </List>
         <Divider className={classes.statsDivider} />
-        <Grid container spacing={1} direction="column" className={classes.gridStatsChart}>
-          <Grid item xs={12} style={{ width: 800, height: 500 }}>
-            <Typography variant="h4">Distribución por estado</Typography>
-            <Pie data={porEstado} arrows noLegend />
-          </Grid>
-          <Grid item xs={6} style={{ width: "100%", height: 300 }}>
-            <Pie data={porEstado} arrows />
-          </Grid>
-          <Grid item xs={6} style={{ width: "100%", height: 300 }}>
-            <Pie data={porEstado} />
-          </Grid>
+        <Grid container>
+          {porEstado && porEstado.length > 0 && (
+            <Grid item sm={12} md={6}>
+              <Typography variant="h5">Distribución por estado</Typography>
+              <Typography variant="body2" color="textSecondary">
+                Este gráfico muestra el número de títulos en su lista agrupados por el estado en que los ha guardado.
+              </Typography>
+              <Pie data={porEstado} arrows noLegend width={600} height={500} />
+            </Grid>
+          )}
+          {porDemografia && porDemografia.length > 0 && (
+            <Grid item sm={12} md={6}>
+              <Typography variant="h5">Distribución por demografia</Typography>
+              <Typography variant="body2" color="textSecondary">
+                Este gráfico muestra el número de títulos en su lista agrupados por el estado en que los ha guardado.
+              </Typography>
+              <Pie data={porDemografia} arrows noLegend width={600} height={500} />
+            </Grid>
+          )}
         </Grid>
-        <div style={{ width: "100%", height: 500 }}>
-          <Bar data={porNota} />
-        </div>
+        {porNota && porNota.length > 0 && (
+          <>
+            <Typography variant="h5">Puntuación</Typography>
+            <div style={{ width: "100%", height: 500 }}>
+              <Bar data={porNota} />
+            </div>
+          </>
+        )}
+        {porAño && porAño.length > 0 && (
+          <>
+            <Typography variant="h5">Año de publicación</Typography>
+            <div style={{ width: "100%", height: 300 }}>
+              <Line data={[{ id: "Año", data: porAño }]} />
+            </div>
+          </>
+        )}
       </>
     );
   };

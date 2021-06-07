@@ -6,4 +6,3 @@
 
 - Markdown
 - Edición massiva
-- De donde proviene el comentario (Para Perfil)

@@ -61,6 +61,8 @@ const useStyle = makeStyles((theme) => ({
   },
   statsList: {
     display: "flex",
+    flexWrap: "wrap",
+    alignItems: "flex-start",
     flexDirection: "row",
     padding: 0,
     margin: "0 0 24px",
@@ -68,10 +70,6 @@ const useStyle = makeStyles((theme) => ({
   },
   statsDivider: {
     marginBottom: 24,
-  },
-  gridStatsChart: {
-    maxWidth: "80%",
-    height: 700,
   },
   commentPaper: {
     marginTop: "1.75rem",
