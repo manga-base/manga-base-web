@@ -33,30 +33,6 @@ const Line = ({ data }) => {
       }}
       axisLeft={null}
       useMesh={true}
-      sliceTooltip={({ slice }) => {
-        return (
-          <div
-            style={{
-              background: "white",
-              padding: "9px 12px",
-              border: "1px solid #ccc",
-            }}
-          >
-            <div>x: {slice.id}</div>
-            {slice.points.map((point) => (
-              <div
-                key={point.id}
-                style={{
-                  color: point.serieColor,
-                  padding: "3px 0",
-                }}
-              >
-                <strong>{point.serieId}</strong> [{point.data.yFormatted}]
-              </div>
-            ))}
-          </div>
-        );
-      }}
       theme={{
         textColor: "#ffffffb3",
         fontSize: 14,

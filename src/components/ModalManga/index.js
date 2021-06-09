@@ -73,8 +73,7 @@ const ModalManga = ({ idManga, open, onClose }) => {
       }
     };
     cargarInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idManga, usuario]);
+  }, [idManga, open, onClose, usuario, enqueueSnackbar]);
 
   const handleSubmitUserData = async () => {
     if (!capitulosLeidosValid || !volumenesLeidosValid) {
@@ -160,13 +159,10 @@ const ModalManga = ({ idManga, open, onClose }) => {
       <Fade in={open}>
         <div className={classes.paperModal}>
           <Grid container direction="row" justify="space-between" alignItems="center">
+            <Typography variant="h5">Editar información de {infoUser.titulo}</Typography>
             <IconButton aria-label="Close" onClick={onClose}>
               <Close />
             </IconButton>
-            <h2>Editar información del manga</h2>
-            <Button variant="contained" color="primary" onClick={handleSubmitUserData}>
-              Guardar
-            </Button>
           </Grid>
 
           <div>
@@ -245,7 +241,7 @@ const ModalManga = ({ idManga, open, onClose }) => {
                   {nota !== null && <Box ml={2}>{labelsNota[valorHoverNota !== -1 ? valorHoverNota : nota]}</Box>}
                 </div>
               </Grid>
-              <Grid container justify="flex-end" item sm={12}>
+              <Grid container justify="space-between" item sm={12}>
                 {infoUser && infoUser.id && (
                   <>
                     <Button
@@ -273,6 +269,9 @@ const ModalManga = ({ idManga, open, onClose }) => {
                     </Dialog>
                   </>
                 )}
+                <Button variant="contained" size="small" color="primary" onClick={handleSubmitUserData}>
+                  Guardar
+                </Button>
               </Grid>
             </Grid>
           </div>

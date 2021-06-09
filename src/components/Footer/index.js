@@ -4,7 +4,6 @@ import { Link as RouterLink } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 import useGlobalStyle from "../../style";
 import useStyle from "./style";
-import "./style.css";
 
 export default function Footer() {
   const localClass = useStyle();

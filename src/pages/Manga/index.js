@@ -86,8 +86,10 @@ const Manga = () => {
     );
   };
 
-  const handleChipClick = (e) => {
-    console.log("Chip click", e.target.dataset.type, e.target.innerText);
+  const handleChipClick = (e, tipo) => {
+    // ?Demografia%5B%5D=Josei
+    //console.log("Chip click", tipo, e.target.innerText);
+    history.push(`/biblioteca?${tipo}%5B%5D=${encodeURI(e.target.innerText)}`);
   };
 
   const newCommentToManga = async (idComentario) => {
@@ -143,23 +145,23 @@ const Manga = () => {
             <div className={classes.chipContainer}>
               <Typography>Autor/es: </Typography>
               {infoManga.autores.map((autor) => {
-                return <Chip key={autor} label={autor} data-type="autor" onClick={handleChipClick} />;
+                return <Chip key={autor} label={autor} onClick={(e) => handleChipClick(e, "Autores")} />;
               })}
             </div>
             <div className={classes.chipContainer}>
               <Typography>Revista/s: </Typography>
               {infoManga.revistas.map((revista) => {
-                return <Chip key={revista} label={revista} data-type="revista" onClick={handleChipClick} />;
+                return <Chip key={revista} label={revista} onClick={(e) => handleChipClick(e, "Revistas")} />;
               })}
             </div>
             <div className={classes.chipContainer}>
               <Typography>Demografia: </Typography>
-              <Chip key={infoManga.id} label={infoManga.demografia} data-type="demografia" onClick={handleChipClick} />
+              <Chip key={infoManga.id} label={infoManga.demografia} onClick={(e) => handleChipClick(e, "Demografia")} />
             </div>
             <div className={classes.chipContainer}>
               <Typography>Géneros:</Typography>
               {infoManga.generos.map((genero) => {
-                return <Chip key={genero} label={genero} data-type="genero" onClick={handleChipClick} />;
+                return <Chip key={genero} label={genero} onClick={(e) => handleChipClick(e, "Géneros")} />;
               })}
             </div>
             <div className={classes.chipContainer}>

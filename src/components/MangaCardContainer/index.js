@@ -2,7 +2,8 @@ import { Button, Divider, FormControl, IconButton, Menu, MenuItem, Paper, Select
 import { ArrowDropDown, SortByAlpha, ViewHeadline, ViewList, ViewModule } from "@material-ui/icons";
 import { Pagination } from "@material-ui/lab";
 import { useEffect, useState } from "react";
-import { MangaCard } from "..";
+import { MangaCard, ModalManga } from "..";
+import { useUser } from "../../context/UserContext";
 import "./style.css";
 
 const orderItems = [
@@ -13,12 +14,15 @@ const orderItems = [
 ];
 
 const MangaCardContainer = ({ mangas, pagination, orderButtons, defaultView }) => {
+  const { usuario } = useUser();
   const [page, setPage] = useState(1);
   const [numMangasPorPagina, setNumMangasPorPagina] = useState(10);
   const [anchorOrdenarPor, setAnchorOrdenarPor] = useState(null);
   const [ordenMangas, setOrdenMangas] = useState("Sin ordenar");
   const [mangasMostrados, setMangasMostrados] = useState(mangas);
   const [view, setView] = useState(defaultView || "card");
+  const [mangaModelOpen, setMangaModelOpen] = useState(false);
+  const [idModalManga, setIdModalManga] = useState(null);
 
   useEffect(() => {
     setMangasMostrados(mangas);
@@ -42,6 +46,11 @@ const MangaCardContainer = ({ mangas, pagination, orderButtons, defaultView }) =
     setAnchorOrdenarPor(null);
   };
 
+  const openModalManga = (id) => {
+    setIdModalManga(id);
+    setMangaModelOpen(true);
+  };
+
   var numPagina = 0;
   var count = 0;
   var llistaPaginada = mangasMostrados;
@@ -53,9 +62,10 @@ const MangaCardContainer = ({ mangas, pagination, orderButtons, defaultView }) =
     llistaPaginada = mangasMostrados.slice(numPagina, numPagina + numMangasPorPagina);
   }
 
-  const listaMangas = llistaPaginada.map((manga) => <MangaCard key={manga.id} manga={manga} view={view} />);
+  const listaMangas = llistaPaginada.map((manga) => <MangaCard key={manga.id} manga={manga} view={view} openModalManga={openModalManga} />);
   return (
     <section className="mangas-container">
+      <ModalManga idManga={idModalManga} open={mangaModelOpen} onClose={() => setMangaModelOpen(false)} />
       <div className="top-buttons">
         <IconButton color={view === "card" ? "primary" : "default"} onClick={() => setView("card")}>
           <ViewModule />
@@ -111,6 +121,7 @@ const MangaCardContainer = ({ mangas, pagination, orderButtons, defaultView }) =
                 <TableCell>Estado</TableCell>
                 <TableCell>Año Publicación</TableCell>
                 <TableCell>Año Finalización</TableCell>
+                {usuario && <TableCell></TableCell>}
               </TableRow>
             </TableHead>
             <TableBody>{listaMangas}</TableBody>

@@ -11,7 +11,6 @@ import { setFiltros, getFiltros } from "../../helpers/storage/filtros";
 import useGlobalStyle from "../../style";
 import useStyle from "./style";
 
-const params = new URLSearchParams(window.location.search);
 var dummy = document.createElement("input");
 
 const Biblioteca = () => {
@@ -55,6 +54,7 @@ const Biblioteca = () => {
   ];
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
     const getMangas = async () => {
       var posiblesMangas = getAllMangas();
       if (posiblesMangas.length > 10) {
@@ -113,6 +113,7 @@ const Biblioteca = () => {
       await getFilters();
       let q = params.get("q");
       q && setValorDeBusqueda(q);
+      console.log("Holaa", [...params]);
       arrayFiltros.forEach(({ label, setFunction }) => {
         label = `${label}[]`;
         let x = params.getAll(label);
@@ -121,8 +122,7 @@ const Biblioteca = () => {
       setDatosCargados(true);
     };
     init();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [enqueueSnackbar, history]);
 
   // Cargar al actualizar los filtros
   useEffect(() => {
@@ -150,6 +150,8 @@ const Biblioteca = () => {
     // console.log("A", mangasFiltrados);
     setMangasMostrados(mangasFiltrados);
     // console.log("B", mangasFiltrados);
+
+    const params = new URLSearchParams(window.location.search);
 
     if (!datosCargados) return;
     valorDeBusqueda ? (params.has("q") ? params.set("q", valorDeBusqueda) : params.append("q", valorDeBusqueda)) : params.delete("q");
@@ -272,7 +274,7 @@ const Biblioteca = () => {
           </div>
           <div className={[classes.filterModule, classes.centerText].join(" ")}>
             <Button startIcon={<Share fontSize="small" />} variant="contained" size="small" color="primary" onClick={copiarUrl}>
-              Compartir busqueda
+              Compartir búsqueda
             </Button>
           </div>
         </div>

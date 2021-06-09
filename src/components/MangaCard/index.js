@@ -1,16 +1,25 @@
-import { Chip, TableCell, TableRow, Typography, Link } from "@material-ui/core";
+import { Chip, TableCell, TableRow, Typography, Link, IconButton } from "@material-ui/core";
+import { MoreHoriz, MoreVert } from "@material-ui/icons";
 import { Rating } from "@material-ui/lab";
 import { Link as ReactLink } from "react-router-dom";
+import { useUser } from "../../context/UserContext";
 import "./style.css";
 const imgUrl = process.env["REACT_APP_IMG_URL"];
 
-const MangaCard = ({ manga, view }) => {
+const MangaCard = ({ manga, view, openModalManga }) => {
+  const { usuario } = useUser();
+
   const Imagen = <img src={imgUrl + "/manga/" + manga.foto} alt={"Portada de " + manga.tituloPreferido} />;
 
   switch (view) {
     case "list":
       return (
         <article className="manga-list">
+          {usuario && (
+            <IconButton className="manga-button" size="small" onClick={() => openModalManga(manga.id)}>
+              <MoreVert fontSize="small" />
+            </IconButton>
+          )}
           <div>
             <div className="manga-image">
               <ReactLink to={"/manga/" + manga.id}>
@@ -55,6 +64,13 @@ const MangaCard = ({ manga, view }) => {
           <TableCell>{manga.estado}</TableCell>
           <TableCell>{manga.añoDePublicacion}</TableCell>
           <TableCell>{manga.añoDeFinalizacion || "???"}</TableCell>
+          {usuario && (
+            <TableCell>
+              <IconButton size="small" onClick={() => openModalManga(manga.id)}>
+                <MoreHoriz fontSize="small" />
+              </IconButton>
+            </TableCell>
+          )}
         </TableRow>
       );
     case "card":
@@ -63,6 +79,9 @@ const MangaCard = ({ manga, view }) => {
         <article className="manga-card">
           <ReactLink to={"/manga/" + manga.id} className="manga-link" />
           {Imagen}
+          <IconButton className="manga-button backgrownd" size="small" onClick={() => openModalManga(manga.id)}>
+            <MoreVert fontSize="small" />
+          </IconButton>
           <p>{manga.tituloPreferido}</p>
         </article>
       );
