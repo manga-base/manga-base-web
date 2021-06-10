@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 
-import logo from "./logo.svg";
+import logo from "../../logo.svg";
 
 const imgUrl = process.env["REACT_APP_IMG_URL"];
 
@@ -99,6 +99,13 @@ export default function Header() {
       href: "/mis-mangas",
       icon: <CollectionsBookmark />,
       publicUser: false,
+    },
+    {
+      label: "Ajustes",
+      href: "/settings",
+      icon: <Settings />,
+      publicUser: false,
+      navbar: false,
     },
   ];
 
@@ -203,8 +210,8 @@ export default function Header() {
     };
 
     const getMenuButtons = () => {
-      return headersData.map(({ label, href, icon, publicUser }) => {
-        if (!publicUser && !usuario) return null;
+      return headersData.map(({ label, href, icon, publicUser, navbar = true }) => {
+        if (!navbar || (!publicUser && !usuario)) return null;
         return (
           <Button
             {...{
@@ -268,7 +275,7 @@ export default function Header() {
     const getAvatarMobile = () => {
       return (
         <div className={classes.avatarMobileContainer}>
-          <IconButton aria-controls="menu-appbar" aria-haspopup="true" onClick={handleDrawerClose} component={RouterLink} to="/perfil" color="inherit">
+          <IconButton aria-controls="menu-appbar" aria-haspopup="true" onClick={handleDrawerClose} component={RouterLink} to={"/profile/" + id} color="inherit">
             <Avatar src={avatarSrc} alt={usuario.username} className={classes.largeAvatar} />
           </IconButton>
           <span className={classes.username}>{usuario.username}</span>
@@ -284,7 +291,7 @@ export default function Header() {
             .map(({ label, href, icon }) => (
               <ListItem
                 button
-                selected={location.pathname.includes(href)}
+                selected={location.pathname === href}
                 {...{
                   component: RouterLink,
                   to: href,
@@ -381,7 +388,7 @@ export default function Header() {
   };
 
   const getLogo = (
-    <IconButton component={RouterLink} to="/" >
+    <IconButton component={RouterLink} to="/">
       <img src={logo} alt="Logo" style={{ height: 40 }} />
     </IconButton>
   );

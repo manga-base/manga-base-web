@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core";
 
 const useStyle = makeStyles((theme) => ({
-  paper: {
+  paperSignUp: {
     marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",

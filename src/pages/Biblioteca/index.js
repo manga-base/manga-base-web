@@ -25,10 +25,8 @@ const Biblioteca = () => {
   const [mangasCargados, setMangasCargados] = useState(false);
   const [mangasMostrados, setMangasMostrados] = useState(mangas);
 
-  // History
   const history = useHistory();
 
-  // Filtros
   const [valorDeBusqueda, setValorDeBusqueda] = useState("");
   const [estados, setEstados] = useState([]);
   const [estadosElegidos, setEstadosElegidos] = useState(estados);
@@ -113,7 +111,6 @@ const Biblioteca = () => {
       await getFilters();
       let q = params.get("q");
       q && setValorDeBusqueda(q);
-      console.log("Holaa", [...params]);
       arrayFiltros.forEach(({ label, setFunction }) => {
         label = `${label}[]`;
         let x = params.getAll(label);
@@ -122,9 +119,9 @@ const Biblioteca = () => {
       setDatosCargados(true);
     };
     init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enqueueSnackbar, history]);
 
-  // Cargar al actualizar los filtros
   useEffect(() => {
     if (!mangasCargados) return;
 
@@ -147,9 +144,7 @@ const Biblioteca = () => {
 
     mangasFiltrados = mangasFiltrados.filter((manga) => elNombreCoincide(manga) && elEstadoCoincide(manga) && laDemografiaCoincide(manga) && elAutorCoincide(manga) && laRevistaCoincide(manga) && elGeneroCoincide(manga) && laNotaCoincide(manga));
 
-    // console.log("A", mangasFiltrados);
     setMangasMostrados(mangasFiltrados);
-    // console.log("B", mangasFiltrados);
 
     const params = new URLSearchParams(window.location.search);
 

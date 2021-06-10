@@ -3,8 +3,6 @@ import { makeStyles } from "@material-ui/core";
 const useStyle = makeStyles((theme) => ({
   paperManga: {
     padding: theme.spacing(5),
-    marginTop: theme.spacing(5),
-    marginBottom: theme.spacing(5),
     overflow: "hidden",
   },
   mangaGrid: {
@@ -13,6 +11,7 @@ const useStyle = makeStyles((theme) => ({
   },
   containerFoto: {
     width: "60%",
+    minHeight: 400,
     position: "relative",
   },
   botonFavorito: {
@@ -25,16 +24,22 @@ const useStyle = makeStyles((theme) => ({
     width: "100%",
     height: "100%",
     borderRadius: "4px",
+    background: "transparent",
   },
   botonEditarInformacion: {
     position: "absolute",
     top: 0,
     right: 0,
   },
+  double: {
+    flex: "2",
+    [theme.breakpoints.down("sm")]: {
+      flex: "1",
+    },
+  },
   fechaPublicacion: {
-    color: "#999",
-    fontSize: "17px",
-    marginLeft: 2,
+    width: 150,
+    flex: "1",
   },
   mangaInfoGrid: {
     position: "relative",
@@ -94,12 +99,28 @@ const useStyle = makeStyles((theme) => ({
     color: "#999",
   },
   subtituloFlag: {
-    verticalAlign: "bottom",
-    marginRight: 4,
+    padding: "27px 4px 8px 0",
   },
   tituloManga: {
     fontSize: 20,
     marginBottom: 10,
+  },
+  formControl: {
+    margin: `${theme.spacing(1)}px 0`,
+    minWidth: 200,
+  },
+  formControlMargin: {
+    margin: theme.spacing(1),
+    marginTop: theme.spacing(6.5),
+    "& .MuiFilledInput-multiline": {
+      padding: "27px 12px 8px",
+    },
+  },
+  inline: {
+    display: "flex",
+    width: "100%",
+    margin: `${theme.spacing(1)}px 0`,
+    gap: theme.spacing(1),
   },
 }));
 

@@ -113,6 +113,17 @@ const useGlobalStyle = makeStyles(
           backgroundColor: red[700],
         },
       },
+      paper: {
+        margin: "1.75rem auto",
+        padding: 15,
+      },
+      tituloRegistro: {
+        marginBottom: 15,
+        textAlign: "center",
+      },
+      smallContainer: {
+        width: "70%",
+      },
     }),
   { classNamePrefix: "MangaBase" }
 );

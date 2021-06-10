@@ -158,9 +158,9 @@ const ModalManga = ({ idManga, open, onClose }) => {
     >
       <Fade in={open}>
         <div className={classes.paperModal}>
-          <Grid container direction="row" justify="space-between" alignItems="center">
+          <Grid container direction="row" justify="space-between" alignItems="center" className={classes.modalTitle}>
             <Typography variant="h5">Editar información de {infoUser.titulo}</Typography>
-            <IconButton aria-label="Close" onClick={onClose}>
+            <IconButton className={classes.closeButton} aria-label="Close" onClick={onClose}>
               <Close />
             </IconButton>
           </Grid>

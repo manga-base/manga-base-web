@@ -53,13 +53,16 @@ const SignUp = () => {
           break;
       }
     } else {
-      history.push("/");
+      history.push({
+        pathname: "/verificar-email",
+        state: { correo: email },
+      });
     }
   };
 
   return (
     <Container component="main" maxWidth="xs">
-      <div className={classes.paper}>
+      <div className={classes.paperSignUp}>
         <Avatar className={classes.avatar}>
           <LockOutlined />
         </Avatar>

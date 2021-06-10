@@ -53,7 +53,7 @@ const Home = () => {
 
   return (
     <Container>
-      <Paper className={classes.paper}>
+      <Paper className={classes.paperHome}>
         <Typography variant="h2">Manga Base</Typography>
         <Typography variant="h4" className={classes.paddingTop}>
           Almacena y administra tu colección de manga personal.
@@ -100,13 +100,13 @@ const Home = () => {
           </Card>
         </div>
       </Paper>
-      <Paper className={classes.paper}>
+      <Paper className={classes.paperHome}>
         <Typography variant="h4" className={classes.paddingBottom}>
           Manga Base te recomienda
         </Typography>
         <MangaCardContainer mangas={mangasRecomendados} />
       </Paper>
-      <Paper className={classes.paper}>
+      <Paper className={classes.paperHome}>
         <Typography variant="h4" className={classes.paddingBottom}>
           Usuarios Destacados
         </Typography>

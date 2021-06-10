@@ -6,7 +6,6 @@ import { useHistory, useParams, Link as RouterLink } from "react-router-dom";
 import { Bar, CommentBox, Line, Loading, MangaCardContainer, Pie } from "../../components";
 import { useUser } from "../../context/UserContext";
 import { http } from "../../helpers/http";
-import { getProfile, setProfile } from "../../helpers/storage/profile";
 import { useSnackbar } from "notistack";
 import { ResponsiveCalendar } from "@nivo/calendar";
 import useStyle from "./style";
@@ -48,6 +47,7 @@ const Profile = () => {
       setTab("info");
       history.push(`/profile/${id}`);
     }
+    setComentariosCargados(false);
 
     const estadoUsuario = (datos) => {
       if (!usuario) return;
@@ -67,12 +67,10 @@ const Profile = () => {
       try {
         var url = usuario ? `/usuario/${idUsuario}/profile` : `/public-usuario/${idUsuario}/profile`;
         const { data } = await http.get(url);
-        console.log("Profile", data);
         const { datos, correcta, mensaje } = data;
         if (correcta) {
           estadoUsuario(datos);
           setInfoPerfil(datos);
-          setProfile(id, datos);
         } else {
           enqueueSnackbar(mensaje, {
             variant: "error",
@@ -87,14 +85,7 @@ const Profile = () => {
       }
     };
 
-    let possibleProfile = getProfile(id);
-    if (possibleProfile) {
-      estadoUsuario(possibleProfile);
-      setInfoPerfil(possibleProfile);
-      setPerfilCargado(true);
-    } else {
-      cargarPerfil(id);
-    }
+    cargarPerfil(id);
 
     const cargarComentarios = async () => {
       try {
@@ -310,18 +301,12 @@ const Profile = () => {
           {porEstado && porEstado.length > 0 && (
             <Grid item sm={12} md={6}>
               <Typography variant="h5">Distribución por estado</Typography>
-              <Typography variant="body2" color="textSecondary">
-                Este gráfico muestra el número de títulos en su lista agrupados por el estado en que los ha guardado.
-              </Typography>
               <Pie data={porEstado} arrows noLegend width={600} height={500} />
             </Grid>
           )}
           {porDemografia && porDemografia.length > 0 && (
             <Grid item sm={12} md={6}>
               <Typography variant="h5">Distribución por demografia</Typography>
-              <Typography variant="body2" color="textSecondary">
-                Este gráfico muestra el número de títulos en su lista agrupados por el estado en que los ha guardado.
-              </Typography>
               <Pie data={porDemografia} arrows noLegend width={600} height={500} />
             </Grid>
           )}

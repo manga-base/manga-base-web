@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core";
 
 const useStyle = makeStyles((theme) => ({
-  paper: {
+  paperHome: {
     margin: "1.7rem auto",
     padding: 15,
     textAlign: "center",

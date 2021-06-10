@@ -87,8 +87,6 @@ const Manga = () => {
   };
 
   const handleChipClick = (e, tipo) => {
-    // ?Demografia%5B%5D=Josei
-    //console.log("Chip click", tipo, e.target.innerText);
     history.push(`/biblioteca?${tipo}%5B%5D=${encodeURI(e.target.innerText)}`);
   };
 
@@ -113,7 +111,7 @@ const Manga = () => {
 
   return (
     <div className={classes.mainContainer}>
-      <Paper elevation={3} className={classes.paper}>
+      <Paper elevation={3} className={classes.paperManga}>
         <Grid container direction="row" justify="center" alignItems="flex-start" className={classes.mangaGrid}>
           <Grid container justify="center" item lg={6}>
             <div className={classes.containerFoto}>

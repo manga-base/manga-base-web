@@ -79,9 +79,11 @@ const MangaCard = ({ manga, view, openModalManga }) => {
         <article className="manga-card">
           <ReactLink to={"/manga/" + manga.id} className="manga-link" />
           {Imagen}
-          <IconButton className="manga-button backgrownd" size="small" onClick={() => openModalManga(manga.id)}>
-            <MoreVert fontSize="small" />
-          </IconButton>
+          {usuario && (
+            <IconButton className="manga-button backgrownd" size="small" onClick={() => openModalManga(manga.id)}>
+              <MoreVert fontSize="small" />
+            </IconButton>
+          )}
           <p>{manga.tituloPreferido}</p>
         </article>
       );

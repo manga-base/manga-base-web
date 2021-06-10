@@ -1,12 +1,15 @@
-import { Typography } from "@material-ui/core";
+import { AppBar, Tab } from "@material-ui/core";
 import { Loading, Message } from "../../components";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { useUser } from "../../context/UserContext";
 import { http } from "../../helpers/http";
 import useGlobalStyle from "../../style";
 import useStyle from "./style";
+import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import { Book, Message as MessageIcon } from "@material-ui/icons";
+import NewManga from "../NewManga";
 
 const Admin = () => {
   const localClass = useStyle();
@@ -16,7 +19,9 @@ const Admin = () => {
   const { usuario } = useUser();
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
+  const { tab: paramTab } = useParams();
 
+  const [tab, setTab] = useState("mensajes");
   const [mensajes, setMensajes] = useState([]);
   const [mensajesCargados, setMensajesCargados] = useState(false);
 
@@ -24,6 +29,13 @@ const Admin = () => {
     if (!usuario || !usuario.admin) {
       history.push("/");
       return;
+    }
+
+    if (paramTab && ["mensajes", "manga"].includes(paramTab)) {
+      setTab(paramTab);
+    } else {
+      setTab("mensajes");
+      history.push(`/admin/mensajes`);
     }
 
     const getMensajes = async () => {
@@ -45,16 +57,33 @@ const Admin = () => {
       }
     };
     getMensajes();
-  }, [enqueueSnackbar, history, usuario]);
+  }, [enqueueSnackbar, history, usuario, paramTab]);
+
+  const handleTabChange = (e, newTab) => {
+    setTab(newTab);
+    history.push(`/admin/${newTab}`);
+  };
 
   if (!mensajesCargados) return <Loading />;
 
   return (
     <div className={classes.mainContainer}>
-      <Typography variant="h1">Admin</Typography>
-      {mensajes.map((props, i) => (
-        <Message key={i.toString()} {...props} />
-      ))}
+      <TabContext value={tab}>
+        <AppBar position="static" color="default" className={classes.TabListAppBar}>
+          <TabList onChange={handleTabChange} variant="fullWidth" indicatorColor="primary" textColor="primary" centered>
+            <Tab label="Mensajes" icon={<MessageIcon />} value="mensajes" />
+            <Tab label="Manga" icon={<Book />} value="manga" />
+          </TabList>
+        </AppBar>
+        <TabPanel value="mensajes" index={0}>
+          {mensajes.map((props, i) => (
+            <Message key={i.toString()} {...props} />
+          ))}
+        </TabPanel>
+        <TabPanel value="manga" index={1}>
+          <NewManga />
+        </TabPanel>
+      </TabContext>
     </div>
   );
 };

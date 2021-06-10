@@ -30,6 +30,15 @@ const useStyle = makeStyles((theme) => ({
     alignItems: "center",
     padding: 8,
   },
+  modalTitle: {
+    position: "relative",
+    paddingRight: 50,
+  },
+  closeButton: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+  },
 }));
 
 export default useStyle;

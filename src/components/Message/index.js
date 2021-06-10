@@ -76,7 +76,7 @@ const Message = ({ id, nombre, email, mensaje, created_at, fotos }) => {
         </div>
         <div className={classes.fotosContainer}>
           <GridList cols={3}>
-            {fotos.map((foto) => (
+            {fotos && fotos.map((foto) => (
               <GridListTile key={foto.id}>
                 <img src={`${imgUrl}contacto/${foto.foto}`} alt={foto.foto} />
                 <GridListTileBar

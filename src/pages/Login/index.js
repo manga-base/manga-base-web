@@ -30,7 +30,7 @@ export default function Login() {
 
   return (
     <Container component="main" maxWidth="xs">
-      <div className={classes.paper}>
+      <div className={classes.paperLogin}>
         <Avatar className={classes.avatar}>
           <LockOutlined />
         </Avatar>
