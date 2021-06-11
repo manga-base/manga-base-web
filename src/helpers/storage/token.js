@@ -9,6 +9,5 @@ export const getToken = () => {
 };
 
 export const deleteToken = () => {
-  console.warn("Borrando Token");
   localStorage.removeItem(tokenKey);
 };

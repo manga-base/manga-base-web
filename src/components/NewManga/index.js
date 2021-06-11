@@ -72,13 +72,9 @@ const NewManga = ({ defaultManga = {}, onClose }) => {
 
   const handleSubmitManga = async (e) => {
     e.preventDefault();
-    if (!mangaImage) {
-      enqueueSnackbar("Falta la foto del manga.", { variant: "error" });
-      return;
-    }
     const manga = new FormData();
     [
-      { name: "foto", value: mangaImage },
+      { name: "foto", value: mangaImage || null },
       { name: "tituloPreferido", value: tituloPreferido },
       { name: "tituloJA", value: tituloJA },
       { name: "tituloRōmaji", value: tituloRōmaji },
@@ -107,13 +103,25 @@ const NewManga = ({ defaultManga = {}, onClose }) => {
     });
 
     try {
-      const { data } = await http.post(`/private-manga/`, manga);
-      enqueueSnackbar(data.mensaje, {
-        variant: data.correcta ? "success" : "error",
-      });
-      if (data.correcta) {
-        setManga(data.datos.id, data.datos);
-        history.push("/biblioteca");
+      if (defaultManga.id) {
+        const { data } = await http.post(`/private-manga/${defaultManga.id}`, manga);
+        enqueueSnackbar(data.mensaje, {
+          variant: data.correcta ? "success" : "error",
+        });
+        onClose();
+      } else {
+        if (!mangaImage) {
+          enqueueSnackbar("Falta la foto del manga.", { variant: "error" });
+          return;
+        }
+        const { data } = await http.post(`/private-manga/`, manga);
+        enqueueSnackbar(data.mensaje, {
+          variant: data.correcta ? "success" : "error",
+        });
+        if (data.correcta) {
+          setManga(data.datos.id, data.datos);
+          history.push("/biblioteca");
+        }
       }
     } catch (error) {
       enqueueSnackbar("Error al cargar los datos", {
@@ -239,7 +247,6 @@ const NewManga = ({ defaultManga = {}, onClose }) => {
                 options={autores}
                 disableCloseOnSelect
                 getOptionLabel={(v) => v.nombre}
-                getOptionSelected={(v) => v.idAutor}
                 renderOption={(v, { selected }) => (
                   <>
                     <Checkbox icon={icon} checkedIcon={checkedIcon} checked={selected} />
@@ -259,7 +266,6 @@ const NewManga = ({ defaultManga = {}, onClose }) => {
                 options={revistas}
                 disableCloseOnSelect
                 getOptionLabel={(v) => v.nombre}
-                getOptionSelected={(v) => v.idRevista}
                 renderOption={(v, { selected }) => (
                   <>
                     <Checkbox icon={icon} checkedIcon={checkedIcon} checked={selected} />
@@ -297,7 +303,6 @@ const NewManga = ({ defaultManga = {}, onClose }) => {
                 options={generos}
                 disableCloseOnSelect
                 getOptionLabel={(v) => v.genero}
-                getOptionSelected={(v) => v.idGenero}
                 renderOption={(v, { selected }) => (
                   <>
                     <Checkbox icon={icon} checkedIcon={checkedIcon} checked={selected} />

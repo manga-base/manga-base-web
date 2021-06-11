@@ -1,5 +1,5 @@
 import { Chip, Grid, IconButton, Paper, Typography } from "@material-ui/core";
-import { Edit, MoreVert } from "@material-ui/icons";
+import { Delete, Edit, MoreVert } from "@material-ui/icons";
 import { Rating } from "@material-ui/lab";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
@@ -35,7 +35,6 @@ const Manga = () => {
     const cargarManga = async () => {
       try {
         const { data } = await http.get(`/manga/info/${id}`);
-        console.log("Manga", data);
         if (data.correcta) {
           setInfoManga(data.datos);
         }
@@ -98,6 +97,21 @@ const Manga = () => {
     }
   };
 
+  const handleDeleteManga = async () => {
+    try {
+      const { data } = await http.delete(`/private-manga/${id}`);
+      enqueueSnackbar(data.mensaje, {
+        variant: data.correcta ? "success" : "error",
+      });
+      if (data.correcta) {
+        history.push("/");
+      }
+    } catch (error) {
+      enqueueSnackbar("Error al insertar el comentrio al manga", {
+        variant: "error",
+      });
+    }
+  };
   if (!mangaCargado) return <Loading />;
 
   if (modoEdicion)
@@ -126,9 +140,14 @@ const Manga = () => {
                 </IconButton>
               )}
               {usuario && !!usuario.admin && (
-                <IconButton onClick={() => setModoEdicion(true)}>
-                  <Edit />
-                </IconButton>
+                <>
+                  <IconButton onClick={() => setModoEdicion(true)}>
+                    <Edit />
+                  </IconButton>
+                  <IconButton onClick={() => handleDeleteManga()}>
+                    <Delete />
+                  </IconButton>
+                </>
               )}
             </div>
             <Grid container direction="row" alignItems="baseline" item>

@@ -1,4 +1,4 @@
-import { AppBar, Tab } from "@material-ui/core";
+import { AppBar, Tab, Typography } from "@material-ui/core";
 import { Loading, Message, NewManga } from "../../components";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
@@ -75,9 +75,7 @@ const Admin = () => {
           </TabList>
         </AppBar>
         <TabPanel value="mensajes" index={0}>
-          {mensajes.map((props, i) => (
-            <Message key={i.toString()} {...props} />
-          ))}
+          {mensajes.length > 0 ? mensajes.map((props, i) => <Message key={i.toString()} {...props} />) : <Typography variant="caption">No hay mensajes.</Typography>}
         </TabPanel>
         <TabPanel value="manga" index={1}>
           <NewManga />
