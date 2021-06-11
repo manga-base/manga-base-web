@@ -165,9 +165,9 @@ export default function Header() {
     const getAvatarDesktop = () => {
       return (
         <>
-          <IconButton color="inherit" aria-label="Notificaciones" aria-controls="notifications-menu" aria-haspopup="true" component="span">
+          {/* <IconButton color="inherit" aria-label="Notificaciones" aria-controls="notifications-menu" aria-haspopup="true" component="span">
             <Notifications />
-          </IconButton>
+          </IconButton> */}
           <IconButton aria-controls="menu-appbar" aria-haspopup="true" onClick={handleMenu} component="span">
             <Avatar src={avatarSrc} alt={usuario.username} />
           </IconButton>
