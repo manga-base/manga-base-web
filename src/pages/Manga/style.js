@@ -26,7 +26,7 @@ const useStyle = makeStyles((theme) => ({
     height: "100%",
     borderRadius: "4px",
   },
-  botonEditarInformacion: {
+  absoluteButtons: {
     position: "absolute",
     top: 0,
     right: 0,

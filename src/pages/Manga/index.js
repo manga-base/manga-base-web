@@ -1,13 +1,12 @@
 import { Chip, Grid, IconButton, Paper, Typography } from "@material-ui/core";
-import { MoreVert } from "@material-ui/icons";
+import { Edit, MoreVert } from "@material-ui/icons";
 import { Rating } from "@material-ui/lab";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { CommentBox, Loading, ModalManga } from "../../components";
+import { CommentBox, Loading, ModalManga, NewManga } from "../../components";
 import { useUser } from "../../context/UserContext";
 import { http } from "../../helpers/http";
-import { getManga, setManga } from "../../helpers/storage/manga";
 import useGlobalStyle from "../../style";
 import useStyle from "./style";
 
@@ -27,6 +26,7 @@ const Manga = () => {
   const [comentarios, setComentarios] = useState([]);
   const [comentariosCargados, setComentariosCargados] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [modoEdicion, setModoEdicion] = useState(false);
 
   const history = useHistory();
 
@@ -35,27 +35,20 @@ const Manga = () => {
     const cargarManga = async () => {
       try {
         const { data } = await http.get(`/manga/info/${id}`);
+        console.log("Manga", data);
         if (data.correcta) {
           setInfoManga(data.datos);
-          setManga(id, data.datos);
-          setMangaCargado(true);
         }
       } catch (error) {
-        setMangaCargado(true);
         history.push("/home");
         enqueueSnackbar("Error al cargar el manga", {
           variant: "error",
         });
       }
+      setMangaCargado(true);
     };
 
-    var possibleManga = getManga(id);
-    if (possibleManga) {
-      setInfoManga(possibleManga);
-      setMangaCargado(true);
-    } else {
-      cargarManga();
-    }
+    cargarManga();
 
     const cargarComentarios = async () => {
       try {
@@ -86,8 +79,8 @@ const Manga = () => {
     );
   };
 
-  const handleChipClick = (e, tipo) => {
-    history.push(`/biblioteca?${tipo}%5B%5D=${encodeURI(e.target.innerText)}`);
+  const handleChipClick = (tipo, nombre) => {
+    history.push(`/biblioteca?${tipo}%5B%5D=${encodeURI(nombre)}`);
   };
 
   const newCommentToManga = async (idComentario) => {
@@ -107,6 +100,13 @@ const Manga = () => {
 
   if (!mangaCargado) return <Loading />;
 
+  if (modoEdicion)
+    return (
+      <div className={classes.mainContainer}>
+        <NewManga defaultManga={infoManga} onClose={() => setModoEdicion(false)} />
+      </div>
+    );
+
   const fotoSrc = `${imgUrl}manga/${infoManga.foto}`;
 
   return (
@@ -119,12 +119,19 @@ const Manga = () => {
             </div>
           </Grid>
           <Grid container direction="column" justify="flex-start" alignItems="flex-start" item lg={6} className={classes.mangaInfoGrid}>
-            {usuario && (
-              <IconButton onClick={() => setOpenModal(true)} className={classes.botonEditarInformacion}>
-                <MoreVert />
-              </IconButton>
-            )}
-            <Grid container direction="row" alignItems="center" item>
+            <div className={classes.absoluteButtons}>
+              {usuario && (
+                <IconButton onClick={() => setOpenModal(true)}>
+                  <MoreVert />
+                </IconButton>
+              )}
+              {usuario && !!usuario.admin && (
+                <IconButton onClick={() => setModoEdicion(true)}>
+                  <Edit />
+                </IconButton>
+              )}
+            </div>
+            <Grid container direction="row" alignItems="baseline" item>
               <h1 className={classes.tituloManga}>{infoManga.tituloPreferido}</h1>
               <Typography className={classes.fechaPublicacion}>({infoManga.añoDePublicacion})</Typography>
             </Grid>
@@ -142,25 +149,37 @@ const Manga = () => {
             </div>
             <div className={classes.chipContainer}>
               <Typography>Autor/es: </Typography>
-              {infoManga.autores.map((autor) => {
-                return <Chip key={autor} label={autor} onClick={(e) => handleChipClick(e, "Autores")} />;
-              })}
+              {infoManga.autores ? (
+                infoManga.autores.map(({ idAutor, nombre }) => {
+                  return <Chip key={"autor" + idAutor.toString()} label={nombre} onClick={(e) => handleChipClick("Autores", nombre)} />;
+                })
+              ) : (
+                <Typography variant="caption">No tiene ningun autor asignado</Typography>
+              )}
             </div>
             <div className={classes.chipContainer}>
               <Typography>Revista/s: </Typography>
-              {infoManga.revistas.map((revista) => {
-                return <Chip key={revista} label={revista} onClick={(e) => handleChipClick(e, "Revistas")} />;
-              })}
+              {infoManga.revistas ? (
+                infoManga.revistas.map(({ idRevista, nombre }) => {
+                  return <Chip key={"revista" + idRevista.toString()} label={nombre} onClick={(e) => handleChipClick("Revistas", nombre)} />;
+                })
+              ) : (
+                <Typography variant="caption">No tiene ninguna revista asignada</Typography>
+              )}
             </div>
             <div className={classes.chipContainer}>
               <Typography>Demografia: </Typography>
-              <Chip key={infoManga.id} label={infoManga.demografia} onClick={(e) => handleChipClick(e, "Demografia")} />
+              <Chip key={infoManga.id} label={infoManga.demografia} onClick={(e) => handleChipClick("Demografia", infoManga.demografia)} />
             </div>
             <div className={classes.chipContainer}>
               <Typography>Géneros:</Typography>
-              {infoManga.generos.map((genero) => {
-                return <Chip key={genero} label={genero} onClick={(e) => handleChipClick(e, "Géneros")} />;
-              })}
+              {infoManga.generos ? (
+                infoManga.generos.map(({ idGenero, genero }) => {
+                  return <Chip key={"genero" + idGenero.toString()} label={genero} onClick={(e) => handleChipClick("Géneros", genero)} />;
+                })
+              ) : (
+                <Typography variant="caption">No tiene ningun genero asignado</Typography>
+              )}
             </div>
             <div className={classes.chipContainer}>
               <Typography>Capitulos: </Typography>

@@ -38,7 +38,7 @@ const Biblioteca = () => {
   const [revistasElegidas, setRevistasElegidas] = useState(revistas);
   const [generos, setGeneros] = useState([]);
   const [generosElegidos, setGenerosElegidos] = useState(generos);
-  const [nota, setNota] = useState([1, 5]);
+  const [nota, setNota] = useState([0, 5]);
 
   const icon = <CheckBoxOutlineBlank fontSize="small" />;
   const checkedIcon = <CheckBox fontSize="small" />;
@@ -137,13 +137,25 @@ const Biblioteca = () => {
 
     const elEstadoCoincide = (manga) => estadosElegidos.length === 0 || estadosElegidos.some((estado) => estado === manga.estado);
     const laDemografiaCoincide = (manga) => demografiasElegidas.length === 0 || demografiasElegidas.some((demografia) => demografia === manga.demografia);
-    const elAutorCoincide = (manga) => autoresElegidos.length === 0 || autoresElegidos.some((autorElegido) => manga.autores.some((autorManga) => autorElegido === autorManga));
-    const laRevistaCoincide = (manga) => revistasElegidas.length === 0 || revistasElegidas.some((revistaElegida) => manga.revistas.some((revistaManga) => revistaElegida === revistaManga));
-    const elGeneroCoincide = (manga) => generosElegidos.length === 0 || generosElegidos.some((generoElegido) => manga.generos.some((generoManga) => generoElegido === generoManga));
+    const elAutorCoincide = (manga) => {
+      if (autoresElegidos.length === 0) return true;
+      if (!manga.autores) return false;
+      return autoresElegidos.some((autorElegido) => manga.autores.some((autorManga) => autorElegido === autorManga));
+    };
+    const laRevistaCoincide = (manga) => {
+      if (revistasElegidas.length === 0) return true;
+      if (!manga.revistas) return false;
+      return revistasElegidas.some((revistaElegida) => manga.revistas.some((revistaManga) => revistaElegida === revistaManga));
+    };
+    const elGeneroCoincide = (manga) => {
+      if (generosElegidos.length === 0) return true;
+      if (!manga.generos) return false;
+      return generosElegidos.some((generoElegido) => manga.generos.some((generoManga) => generoElegido === generoManga));
+    };
     const laNotaCoincide = (manga) => manga.nota >= nota[0] && manga.nota <= nota[1];
 
     mangasFiltrados = mangasFiltrados.filter((manga) => elNombreCoincide(manga) && elEstadoCoincide(manga) && laDemografiaCoincide(manga) && elAutorCoincide(manga) && laRevistaCoincide(manga) && elGeneroCoincide(manga) && laNotaCoincide(manga));
-
+    mangasFiltrados.sort((x, y) => x.id - y.id);
     setMangasMostrados(mangasFiltrados);
 
     const params = new URLSearchParams(window.location.search);
@@ -167,7 +179,7 @@ const Biblioteca = () => {
 
     history.push({ search: params.toString() });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [valorDeBusqueda, estadosElegidos, demografiasElegidas, autoresElegidos, autoresElegidos, revistasElegidas, generosElegidos, nota, history]);
+  }, [valorDeBusqueda, estadosElegidos, demografiasElegidas, autoresElegidos, revistasElegidas, generosElegidos, nota, history]);
 
   const cleanFilters = () => {
     setValorDeBusqueda("");

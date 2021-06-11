@@ -1,5 +1,5 @@
 import { AppBar, Tab } from "@material-ui/core";
-import { Loading, Message } from "../../components";
+import { Loading, Message, NewManga } from "../../components";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
@@ -9,7 +9,6 @@ import useGlobalStyle from "../../style";
 import useStyle from "./style";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { Book, Message as MessageIcon } from "@material-ui/icons";
-import NewManga from "../NewManga";
 
 const Admin = () => {
   const localClass = useStyle();
