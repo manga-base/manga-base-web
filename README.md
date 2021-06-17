@@ -1,6 +1,6 @@
 # Manga Base React Web
 
-Per posar en funcionament la web de Manga Base, s'ha de descarregar aquest repositori i a l'arrel del mateix afegir un arxiu anomenat `.env`.
+Per posar en funcionament la web de Manga Base, s'ha de descarregar aquest repositori i executar la comanda `npm install`, desprès a l'arrel del mateix afegir un arxiu anomenat `.env`.
 
 El contingut de l'arxiu ha de ser el següent:
 
